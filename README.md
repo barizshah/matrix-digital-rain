@@ -22,7 +22,7 @@ A lightweight, zero-dependency HTML5 Canvas implementation of the iconic **Matri
 Simply clone the repository and double-click `index.html` (or `matrix.html`):
 
 ```bash
-git clone https://github.com/<username>/matrix-digital-rain.git
+git clone https://github.com/barizssh/matrix-digital-rain.git
 cd matrix-digital-rain
 open index.html # On macOS
 # OR
