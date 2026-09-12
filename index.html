@@ -2,11 +2,33 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#000000">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Matrix Digital Rain</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { background: #000; overflow: hidden; }
-    canvas { display: block; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      position: fixed;
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      touch-action: none;
+    }
   </style>
 </head>
 <body>
@@ -14,52 +36,170 @@
 
   <script>
     const canvas = document.getElementById('matrix');
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext('2d', { alpha: false });
 
-    const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    const fontSize = 16;
+    // Authentic Katakana, numerals, and punctuation
+    const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ:・."=*+-<>¦｜';
+    const charLen = chars.length;
+
+    let fontSize = 16;
     let columns = 0;
+    let rows = 0;
     let drops = [];
 
-    function resize() {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-      columns = Math.floor(canvas.width / fontSize);
-      drops = Array(columns).fill(1);
-    }
+    // Target 30 FPS for authentic film look + high battery/thermal efficiency on mobile
+    const TARGET_FPS = 30;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
+    let lastTime = 0;
+    let animationFrameId = null;
 
-    function draw() {
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    class Stream {
+      constructor(xIndex) {
+        this.xIndex = xIndex;
+        this.reset(true);
+      }
 
-      ctx.font = `${fontSize}px monospace`;
+      reset(init = false) {
+        this.y = init ? Math.floor(Math.random() * -rows) : Math.floor(Math.random() * -10);
+        // Vary fall speeds slightly for organic depth
+        this.speed = 0.5 + Math.random() * 0.75;
+        this.char = chars[Math.floor(Math.random() * charLen)];
+      }
 
-      for (let i = 0; i < drops.length; i++) {
-        const char = chars.charAt(Math.floor(Math.random() * chars.length));
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
-
-        // Head character (bright white glow)
-        ctx.fillStyle = '#FFFFFF';
-        ctx.shadowColor = '#00FF41';
-        ctx.shadowBlur = 8;
-        ctx.fillText(char, x, y);
-
-        // Body trail (classic neon green)
-        ctx.fillStyle = '#00FF41';
-        ctx.shadowBlur = 0;
-        ctx.fillText(char, x, y - fontSize);
-
-        if (y > canvas.height && Math.random() > 0.975) {
-          drops[i] = 0;
+      update() {
+        this.y += this.speed;
+        // Randomly mutate lead glyph
+        if (Math.random() < 0.15) {
+          this.char = chars[Math.floor(Math.random() * charLen)];
         }
-        drops[i]++;
+
+        if (this.y > rows + 5) {
+          this.reset();
+        }
       }
     }
 
-    window.addEventListener('resize', resize);
+    function resize() {
+      const isMobile = window.innerWidth <= 768;
+      // Slightly larger glyphs on mobile screens for crisp legibility and lower CPU load
+      fontSize = isMobile ? 18 : 16;
+
+      // Cap DPR to 2 to prevent excessive GPU fillrate load on 3x/4x mobile displays
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      canvas.width = Math.floor(width * dpr);
+      canvas.height = Math.floor(height * dpr);
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      columns = Math.floor(width / fontSize);
+      rows = Math.ceil(height / fontSize);
+
+      drops = [];
+      for (let i = 0; i < columns; i++) {
+        const s = new Stream(i);
+        s.y = Math.random() * rows;
+        drops.push(s);
+      }
+
+      // Initial clean background fill
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, width, height);
+    }
+
+    function render(timestamp) {
+      animationFrameId = requestAnimationFrame(render);
+
+      const elapsed = timestamp - lastTime;
+      if (elapsed < FRAME_INTERVAL) return;
+
+      lastTime = timestamp - (elapsed % FRAME_INTERVAL);
+
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // Semi-transparent fade layer to leave phosphor trails
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.textBaseline = 'top';
+
+      for (let i = 0; i < columns; i++) {
+        const stream = drops[i];
+        if (!stream) continue;
+
+        stream.update();
+
+        const x = stream.xIndex * fontSize;
+        const currentY = Math.floor(stream.y);
+        const yPx = currentY * fontSize;
+
+        if (currentY >= 0 && currentY <= rows) {
+          // Trail glyph (neon matrix green)
+          const trailChar = chars[Math.floor(Math.random() * charLen)];
+          ctx.fillStyle = '#00FF41';
+          ctx.fillText(trailChar, x, (currentY - 1) * fontSize);
+
+          // Lead glyph (bright white-green glow without expensive canvas shadowBlur)
+          ctx.fillStyle = '#E8FFE8';
+          ctx.fillText(stream.char, x, yPx);
+        }
+      }
+    }
+
+    // Debounced resize listener
+    let resizeTimeout;
+    window.addEventListener('resize', () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resize, 100);
+    }, { passive: true });
+
+    // Conserve battery when tab is minimized or in background
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        if (animationFrameId) {
+          cancelAnimationFrame(animationFrameId);
+          animationFrameId = null;
+        }
+      } else {
+        lastTime = performance.now();
+        if (!animationFrameId) {
+          animationFrameId = requestAnimationFrame(render);
+        }
+      }
+    });
+
+    // Touch and click ripple effect: trigger rainfall from tap position
+    function handleInteraction(clientX) {
+      const col = Math.floor(clientX / fontSize);
+      if (drops[col]) drops[col].y = 0;
+      if (drops[col - 1]) drops[col - 1].y = 0;
+      if (drops[col + 1]) drops[col + 1].y = 0;
+    }
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches[0]) {
+        handleInteraction(e.touches[0].clientX);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        handleInteraction(e.touches[0].clientX);
+      }
+    }, { passive: true });
+
+    window.addEventListener('click', (e) => {
+      handleInteraction(e.clientX);
+    });
+
+    // Start
     resize();
-    setInterval(draw, 33); // ~30 FPS
+    lastTime = performance.now();
+    animationFrameId = requestAnimationFrame(render);
   </script>
 </body>
 </html>
