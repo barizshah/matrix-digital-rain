@@ -3,11 +3,11 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
 [![HTML5 Canvas](https://img.shields.io/badge/Canvas-HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://barizssh.github.io/matrix-digital-rain/)
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://barizsh.github.io/matrix-digital-rain/)
 
 A lightweight, zero-dependency HTML5 Canvas and vanilla JavaScript implementation of the iconic **Matrix Digital Rain** (falling code) visual effect. Featuring cascading Japanese Katakana & alphanumeric characters, glowing lead glyphs, dynamic window resizing, and smooth 30 FPS render physics.
 
-[🌐 **View Live Demo**](https://barizssh.github.io/matrix-digital-rain/)
+[🌐 **View Live Demo**](https://barizsh.github.io/matrix-digital-rain/)
 
 ---
 
@@ -32,7 +32,7 @@ A lightweight, zero-dependency HTML5 Canvas and vanilla JavaScript implementatio
 Simply clone the repository and open `index.html`:
 
 ```bash
-git clone https://github.com/barizssh/matrix-digital-rain.git
+git clone https://github.com/barizsh/matrix-digital-rain.git
 cd matrix-digital-rain
 # Open on Linux
 xdg-open index.html
@@ -74,7 +74,7 @@ ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
 ## 🤝 Contributing
 
 Contributions, bug reports, and feature suggestions are welcome!
-Feel free to open an [issue](https://github.com/barizssh/matrix-digital-rain/issues) or submit a pull request.
+Feel free to open an [issue](https://github.com/barizsh/matrix-digital-rain/issues) or submit a pull request.
 
 If you like this project, consider giving it a ⭐ on GitHub!
 
