@@ -1,74 +1,71 @@
 # Matrix Digital Rain 🟢
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Version: v1.0.1](https://img.shields.io/badge/Release-v1.0.1-brightgreen.svg)](https://github.com/barizshah/matrix-digital-rain/releases/tag/v1.0.1)
+[![Version: v2.0.0](https://img.shields.io/badge/Release-v2.0.0-brightgreen.svg)](https://github.com/barizshah/matrix-digital-rain/releases/tag/v2.0.0)
 [![HTML5 Canvas](https://img.shields.io/badge/Canvas-HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://barizshah.github.io/matrix-digital-rain/)
 
-A lightweight, high-performance, zero-dependency HTML5 Canvas and vanilla JavaScript implementation of the iconic **Matrix Digital Rain** (falling code) visual effect. Featuring multi-layer 3D depth parallax, mobile & desktop adaptive frame rates, touch & pointer interactive shockwaves, cyberpunk theme switcher, interactive controls HUD, real-time FPS counter, synthesized Web Audio, and keyboard shortcuts.
+A lightweight, pure, zero-dependency HTML5 Canvas and vanilla JavaScript implementation of the iconic **Matrix Digital Rain** (falling code) visual effect. Clean, distraction-free, and meticulously optimized for both mobile and desktop screens.
 
 [🌐 **View Live Demo**](https://barizshah.github.io/matrix-digital-rain/)
 
 ---
 
-![Matrix Digital Rain Preview](assets/preview.jpg)
+## 🖥️ Desktop Preview
+
+![Matrix Digital Rain Desktop Preview](assets/desktop.png)
 
 ---
 
-## ✨ What's New in v1.0.1
+## 📱 Mobile Preview
 
-- 🌌 **3D Depth & Parallax Layering**: Tri-layer streams (Foreground, Midground, Background) with dynamic scaling, varied velocities, and layered luminescence for authentic cinematic depth.
-- 📱 **Mobile & Desktop Adaptive Optimization**:
-  - Automatically switches between fluid 60 FPS on desktop displays and battery-conserving 30 FPS on mobile devices.
-  - Adaptive column stride and background density to minimize GPU fill-rate and thermal throttling on smartphones.
-  - Full support for mobile safe areas (`env(safe-area-inset-*)`), iOS status bar translucency, notch ergonomics, and multi-touch swipe/tap gestures.
-- 🎨 **Multi-Color Theme Engine**:
-  - 🟢 **Matrix Classic** (Iconic Emerald Green)
-  - 🔵 **Resurrection Cyan** (The Matrix Resurrections Neon Teal)
-  - 🟡 **Cyberpunk Amber** (Retro Terminal Gold)
-  - 🔴 **Sith Crimson** (Deep Neon Red)
-  - 🟣 **Neon Purple** (Ghost in the Shell / Synthwave Violet)
-- 🎛️ **Interactive Cyberpunk HUD**: Sleek, glassmorphic settings panel with real-time sliders for Speed, 3D Parallax toggle, Trail persistence, and live FPS monitor.
-- 🔊 **Zero-Asset Audio Synthesis**: Built-in ambient digital hum and data blips synthesized purely with the browser's native Web Audio API (0 KB added download size).
-- 💥 **Interactive Shockwaves & Ripples**: Clicking, tapping, or dragging sends ripples through the digital matrix, scattering character streams.
-- 📸 **One-Click Snapshots**: Save high-resolution PNG captures of the digital rain instantly.
-- ⌨️ **Keyboard Hotkeys**: Full hands-on control via hotkeys.
+<p align="center">
+  <img src="assets/mobile.png" alt="Matrix Digital Rain Mobile Preview" width="300">
+</p>
 
 ---
 
-## 📱 Mobile & Touch Experience
+## ✨ Features in v2.0.0
 
-- **Touch & Drag**: Tap or drag anywhere on the screen to trigger ripples and scatter cascading glyphs.
-- **Responsive Settings HUD**: Tap `⚙️` to adjust rain speed, toggle 3D parallax, change themes, or mute/unmute synthesized digital audio.
-- **Outside Tap Dismiss**: Tapping anywhere on the canvas automatically closes the settings HUD on mobile devices.
-- **Battery & Thermal Conservation**: The animation automatically pauses when the browser tab is hidden or minimized.
+- 🟢 **Pure & Distraction-Free**: Clean, authentic Matrix visual effect with no bloated menus, complex UI, or unnecessary dependencies.
+- ⚡ **Zero Dependencies**: Pure HTML5 Canvas and vanilla JavaScript (`0` libraries, `0` external assets).
+- 💚 **Authentic Movie Visuals**: Glowing bright white-hot lead glyphs cascading into phosphor neon-green fading trails (`#00FF41`).
+- ⛶ **Auto-Hiding Fullscreen**: Unobtrusive fullscreen button that smoothly fades out after 3 seconds of inactivity, plus double-tap/double-click and <kbd>F</kbd> shortcut support.
+- 📱 **Mobile & Desktop Optimized**:
+  - Automatically adapts font size and column density for desktop (`16px`) and mobile (`18px`).
+  - Device Pixel Ratio (DPR) capped at 2 to ensure razor-sharp text on Retina/OLED displays while preserving GPU fill-rate and battery life.
+  - Safe-area insets support (`viewport-fit=cover`, `env(safe-area-inset-*)`) for notched phone displays.
+  - Automatic render sleep on tab minimize or screen lock via `visibilitychange`.
+- 🔣 **Rich Character Stream**: Authentic half-width Japanese Katakana (`ﾊﾐﾋｰｳｼﾅﾓﾆ...`), Latin letters, numbers, and matrix symbols.
+- 👆 **Interactive Touch & Ripple**: Tap, click, or drag anywhere across the screen to scatter falling code streams.
 
 ---
 
-## ⌨️ Keyboard Controls & Shortcuts
+## ⌨️ Controls & Gestures
 
-| Key | Action |
+| Control / Gesture | Action |
 | :--- | :--- |
-| <kbd>Space</kbd> | Pause / Resume animation |
-| <kbd>H</kbd> | Toggle Settings HUD |
+| **Tap / Click** | Trigger digital rain ripple at pointer location |
+| **Move Mouse / Touch** | Reveal fullscreen control |
+| **Double Tap / Double Click** | Toggle Fullscreen mode |
 | <kbd>F</kbd> | Toggle Fullscreen |
-| <kbd>C</kbd> | Cycle Color Themes |
-| <kbd>R</kbd> | Trigger Lightning Flash & Reset |
-| <kbd>Esc</kbd> | Close Settings HUD |
+| <kbd>Space</kbd> | Pause / Resume animation |
 
 ---
 
 ## 🚀 Quick Start
 
 ### 1. Run Directly in Browser
-Simply clone the repository and open `index.html`:
+Clone the repository and open `index.html`:
 
 ```bash
 git clone https://github.com/barizshah/matrix-digital-rain.git
 cd matrix-digital-rain
+
 # Open on Linux
 xdg-open index.html
+
 # OR open on macOS
 open index.html
 ```
@@ -83,25 +80,19 @@ Then open your browser to [http://localhost:8000](http://localhost:8000).
 
 ---
 
-## 🛠️ Customization & Architecture
+## 🛠️ Customization
 
-The entire project remains **100% dependency-free** and self-contained within `index.html`. Custom settings, character sets, and themes can be customized in JavaScript:
+Animation parameters can be tweaked directly inside `index.html`:
 
 ```javascript
-// Authentic Katakana, Latin glyphs, and operators
-const CHARS = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ:・."=*+-<>¦｜';
+// Authentic Katakana, Latin symbols, and numbers
+const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ:・."=*+-<>¦｜';
 
-// Custom theme palette definition
-const THEMES = {
-  classic: {
-    name: 'Matrix Classic',
-    lead: '#E8FFE8',
-    trail: '#00FF41',
-    dim: '#00661a',
-    glow: '#00FF41'
-  },
-  // Add your own custom color themes here!
-};
+// Target 30 FPS for iconic film cadence + thermal/battery efficiency
+const TARGET_FPS = 30;
+
+// Trail fade rate (lower alpha = longer trails)
+ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
 ```
 
 ---

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="Cinematic Matrix Digital Rain with multi-layer 3D depth, customizable themes, interactive physics, and audio. Optimized for desktop and mobile.">
+  <meta name="description" content="Authentic Matrix Digital Rain effect in pure HTML5 Canvas and vanilla JavaScript. Lightweight, responsive, and battery-friendly.">
   <title>Matrix Digital Rain</title>
   <style>
     * {
@@ -23,7 +23,6 @@
       background: #000;
       overflow: hidden;
       position: fixed;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", monospace;
     }
     canvas {
       display: block;
@@ -32,503 +31,112 @@
       touch-action: none;
     }
 
-    /* Minimalist Cyberpunk HUD */
-    #hud-toggle {
+    /* Minimalist Auto-Hiding Fullscreen Button */
+    #fs-btn {
       position: fixed;
       top: max(16px, env(safe-area-inset-top, 16px));
       right: max(16px, env(safe-area-inset-right, 16px));
-      z-index: 100;
-      background: rgba(0, 0, 0, 0.7);
-      border: 1px solid var(--theme-lead, #00FF41);
-      color: var(--theme-lead, #00FF41);
-      width: 42px;
-      height: 42px;
-      border-radius: 10px;
+      z-index: 10;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(0, 255, 65, 0.35);
+      color: #00FF41;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 20px;
-      box-shadow: 0 0 12px rgba(0, 255, 65, 0.25);
-      transition: all 0.2s ease;
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
+      opacity: 0.85;
+      transition: opacity 0.5s ease, background 0.2s ease, border-color 0.2s ease;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
     }
-    #hud-toggle:hover {
-      background: rgba(0, 255, 65, 0.18);
-      box-shadow: 0 0 16px rgba(0, 255, 65, 0.5);
-      transform: scale(1.05);
+    #fs-btn:hover {
+      background: rgba(0, 255, 65, 0.15);
+      border-color: #00FF41;
+      opacity: 1 !important;
     }
-
-    #hud-panel {
-      position: fixed;
-      top: max(68px, calc(env(safe-area-inset-top, 16px) + 50px));
-      right: max(16px, env(safe-area-inset-right, 16px));
-      z-index: 99;
-      width: 300px;
-      max-width: calc(100vw - 32px);
-      max-height: calc(100vh - 100px);
-      overflow-y: auto;
-      background: rgba(6, 12, 8, 0.92);
-      border: 1px solid rgba(0, 255, 65, 0.45);
-      border-radius: 14px;
-      padding: 18px 20px;
-      color: #bbf7d0;
-      font-size: 13px;
-      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 255, 65, 0.15);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
+    #fs-btn.fade-out {
       opacity: 0;
-      visibility: hidden;
-      transform: translateY(-8px) scale(0.98);
       pointer-events: none;
     }
-    #hud-panel.active {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
-
-    .hud-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      font-size: 12px;
-      color: var(--theme-lead, #00FF41);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-      padding-bottom: 8px;
-      margin-bottom: 14px;
-    }
-
-    .hud-row {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      margin-bottom: 12px;
-    }
-    .hud-row label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11.5px;
-      color: #94a3b8;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-    .hud-row input[type="range"] {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 6px;
-      border-radius: 3px;
-      background: rgba(255, 255, 255, 0.18);
-      outline: none;
-      cursor: pointer;
-    }
-    .hud-row input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
+    #fs-btn svg {
       width: 18px;
       height: 18px;
-      border-radius: 50%;
-      background: var(--theme-lead, #00FF41);
-      box-shadow: 0 0 10px var(--theme-lead, #00FF41);
-      cursor: pointer;
-    }
-
-    .theme-grid {
-      display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
-      margin-top: 4px;
-    }
-    .theme-btn {
-      height: 28px;
-      border-radius: 6px;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      cursor: pointer;
-      transition: transform 0.15s, border-color 0.15s;
-    }
-    .theme-btn.active {
-      border-color: #fff;
-      transform: scale(1.08);
-      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-    }
-
-    .hud-actions {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 14px;
-    }
-    .btn-action {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.18);
-      color: #f1f5f9;
-      padding: 8px 10px;
-      font-size: 11px;
-      font-weight: 600;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-    .btn-action:hover, .btn-action:active {
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--theme-lead, #00FF41);
-      color: var(--theme-lead, #00FF41);
-    }
-
-    .hud-shortcuts {
-      margin-top: 14px;
-      padding-top: 10px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-      font-size: 10px;
-      color: #64748b;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .hud-shortcuts span {
-      background: rgba(255, 255, 255, 0.06);
-      padding: 2px 6px;
-      border-radius: 4px;
-      color: #94a3b8;
-    }
-
-    /* Notification Flash */
-    #notification {
-      position: fixed;
-      bottom: max(24px, env(safe-area-inset-bottom, 24px));
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: rgba(0, 0, 0, 0.88);
-      border: 1px solid var(--theme-lead, #00FF41);
-      color: var(--theme-lead, #00FF41);
-      padding: 8px 18px;
-      border-radius: 20px;
-      font-size: 12px;
-      letter-spacing: 0.05em;
-      opacity: 0;
-      pointer-events: none;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      z-index: 200;
-      box-shadow: 0 0 16px rgba(0, 255, 65, 0.35);
-      backdrop-filter: blur(8px);
-    }
-    #notification.show {
-      opacity: 1;
-      transform: translateX(-50%) translateY(0);
-    }
-
-    @media (max-width: 768px) {
-      .hud-shortcuts {
-        display: none;
-      }
-      #hud-panel {
-        width: 270px;
-        padding: 14px 16px;
-      }
+      fill: currentColor;
     }
   </style>
 </head>
 <body>
   <canvas id="matrix"></canvas>
 
-  <!-- HUD Toggle Button -->
-  <button id="hud-toggle" aria-label="Toggle HUD Settings" title="Toggle Settings (Press H)">⚙️</button>
-
-  <!-- Control HUD -->
-  <div id="hud-panel">
-    <div class="hud-title">
-      <span>System Settings</span>
-      <span id="fps-counter" style="font-family: monospace; font-size: 11px;">60 FPS</span>
-    </div>
-
-    <div class="hud-row">
-      <label>Theme</label>
-      <div class="theme-grid">
-        <button class="theme-btn active" data-theme="classic" style="background:#00FF41" title="Matrix Green"></button>
-        <button class="theme-btn" data-theme="cyan" style="background:#00f0ff" title="Resurrection Cyan"></button>
-        <button class="theme-btn" data-theme="amber" style="background:#ffb000" title="Cyberpunk Amber"></button>
-        <button class="theme-btn" data-theme="crimson" style="background:#ff2a55" title="Sith Crimson"></button>
-        <button class="theme-btn" data-theme="violet" style="background:#d946ef" title="Neon Purple"></button>
-      </div>
-    </div>
-
-    <div class="hud-row">
-      <label>Speed <span id="speed-val">1.0x</span></label>
-      <input type="range" id="speed-slider" min="0.2" max="3.0" step="0.1" value="1.0">
-    </div>
-
-    <div class="hud-row">
-      <label>Depth 3D Parallax <span id="depth-val">ON</span></label>
-      <input type="range" id="depth-slider" min="0" max="1" step="1" value="1">
-    </div>
-
-    <div class="hud-row">
-      <label>Trail Length <span id="trail-val">Normal</span></label>
-      <input type="range" id="trail-slider" min="0.03" max="0.2" step="0.01" value="0.08">
-    </div>
-
-    <div class="hud-actions">
-      <button class="btn-action" id="btn-pause">⏸️ Pause</button>
-      <button class="btn-action" id="btn-fullscreen">⛶ Fullscreen</button>
-      <button class="btn-action" id="btn-audio">🔇 Sound OFF</button>
-      <button class="btn-action" id="btn-snap">📷 Snapshot</button>
-    </div>
-
-    <div class="hud-shortcuts">
-      <span>[Space] Pause</span>
-      <span>[H] HUD</span>
-      <span>[F] Fullscreen</span>
-      <span>[C] Theme</span>
-      <span>[R] Flash</span>
-    </div>
-  </div>
-
-  <div id="notification">Snapshot Saved</div>
+  <button id="fs-btn" aria-label="Toggle Fullscreen" title="Toggle Fullscreen (F)">
+    <svg id="fs-icon-enter" viewBox="0 0 24 24">
+      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+    </svg>
+    <svg id="fs-icon-exit" viewBox="0 0 24 24" style="display: none;">
+      <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+    </svg>
+  </button>
 
   <script>
-    // --- Configuration & Themes ---
-    const THEMES = {
-      classic: {
-        name: 'Matrix Classic',
-        lead: '#E8FFE8',
-        trail: '#00FF41',
-        dim: '#00661a',
-        glow: '#00FF41'
-      },
-      cyan: {
-        name: 'Resurrection Cyan',
-        lead: '#E0FFFF',
-        trail: '#00F0FF',
-        dim: '#005f66',
-        glow: '#00F0FF'
-      },
-      amber: {
-        name: 'Cyberpunk Amber',
-        lead: '#FFF4D6',
-        trail: '#FFB000',
-        dim: '#664600',
-        glow: '#FFB000'
-      },
-      crimson: {
-        name: 'Sith Crimson',
-        lead: '#FFEAEA',
-        trail: '#FF2A55',
-        dim: '#660b1d',
-        glow: '#FF2A55'
-      },
-      violet: {
-        name: 'Neon Purple',
-        lead: '#FDF2F8',
-        trail: '#D946EF',
-        dim: '#581c87',
-        glow: '#D946EF'
-      }
-    };
-
-    let currentThemeKey = 'classic';
-    let currentTheme = THEMES.classic;
-
-    // Authentic Katakana, Latin glyphs, numerals, operators
-    const CHARS = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ:・."=*+-<>¦｜';
-    const CHAR_LEN = CHARS.length;
-
-    // Canvas Setup
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d', { alpha: false });
+    const fsBtn = document.getElementById('fs-btn');
+    const iconEnter = document.getElementById('fs-icon-enter');
+    const iconExit = document.getElementById('fs-icon-exit');
 
-    // App State
-    let isPaused = false;
-    let audioEnabled = false;
-    let audioCtx = null;
-    let audioGain = null;
-    let speedMult = 1.0;
-    let fadeRate = 0.08;
-    let enable3D = true;
-    let baseFontSize = 16;
-    let width = 0;
-    let height = 0;
-    let isMobile = false;
+    // Authentic Katakana, Latin symbols, numerals, and punctuation
+    const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ:・."=*+-<>¦｜';
+    const charLen = chars.length;
 
-    let streams = [];
-    let ripples = [];
+    let fontSize = 16;
+    let columns = 0;
+    let rows = 0;
+    let drops = [];
 
-    // Frame timing & FPS calculation
-    // Adaptable FPS: 60 FPS on desktop, 30 FPS on mobile for high battery efficiency
-    let targetFps = 60;
-    let frameInterval = 1000 / targetFps;
+    // Target 30 FPS for iconic film cadence + thermal/battery efficiency on mobile
+    const TARGET_FPS = 30;
+    const FRAME_INTERVAL = 1000 / TARGET_FPS;
     let lastTime = 0;
     let animationFrameId = null;
-    let frameCount = 0;
-    let lastFpsUpdate = 0;
 
-    // UI Elements
-    const hudToggle = document.getElementById('hud-toggle');
-    const hudPanel = document.getElementById('hud-panel');
-    const fpsCounter = document.getElementById('fps-counter');
-    const speedSlider = document.getElementById('speed-slider');
-    const speedVal = document.getElementById('speed-val');
-    const depthSlider = document.getElementById('depth-slider');
-    const depthVal = document.getElementById('depth-val');
-    const trailSlider = document.getElementById('trail-slider');
-    const trailVal = document.getElementById('trail-val');
-    const btnPause = document.getElementById('btn-pause');
-    const btnFullscreen = document.getElementById('btn-fullscreen');
-    const btnAudio = document.getElementById('btn-audio');
-    const btnSnap = document.getElementById('btn-snap');
-    const notification = document.getElementById('notification');
-    const themeButtons = document.querySelectorAll('.theme-btn');
-
-    function showNotification(text) {
-      notification.textContent = text;
-      notification.classList.add('show');
-      clearTimeout(notification._timer);
-      notification._timer = setTimeout(() => {
-        notification.classList.remove('show');
-      }, 1600);
-    }
-
-    function updateTheme(key) {
-      if (!THEMES[key]) return;
-      currentThemeKey = key;
-      currentTheme = THEMES[key];
-      document.documentElement.style.setProperty('--theme-lead', currentTheme.trail);
-
-      themeButtons.forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.theme === key);
-      });
-      showNotification(currentTheme.name);
-    }
-
-    // --- Audio Synthesis (0 External Assets) ---
-    function initAudio() {
-      if (audioCtx) return;
-      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContextClass) return;
-
-      audioCtx = new AudioContextClass();
-      audioGain = audioCtx.createGain();
-      audioGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-
-      const osc = audioCtx.createOscillator();
-      osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(55, audioCtx.currentTime);
-
-      const filter = audioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(260, audioCtx.currentTime);
-
-      osc.connect(filter);
-      filter.connect(audioGain);
-      audioGain.connect(audioCtx.destination);
-      osc.start();
-    }
-
-    function toggleAudio() {
-      if (!audioEnabled) {
-        initAudio();
-        if (audioCtx && audioCtx.state === 'suspended') {
-          audioCtx.resume();
-        }
-        if (audioGain) audioGain.gain.setTargetAtTime(0.04, audioCtx.currentTime, 0.1);
-        audioEnabled = true;
-        btnAudio.textContent = '🔊 Sound ON';
-        showNotification('Digital Sound ON');
-      } else {
-        if (audioGain && audioCtx) {
-          audioGain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.1);
-        }
-        audioEnabled = false;
-        btnAudio.textContent = '🔇 Sound OFF';
-        showNotification('Digital Sound OFF');
-      }
-    }
-
-    function playGlitchBlip() {
-      if (!audioEnabled || !audioCtx || audioCtx.state !== 'running') return;
-      try {
-        const osc = audioCtx.createOscillator();
-        const blipGain = audioCtx.createGain();
-        osc.type = 'sine';
-        const freqs = [880, 1174, 1318, 1760];
-        osc.frequency.setValueAtTime(freqs[Math.floor(Math.random() * freqs.length)], audioCtx.currentTime);
-        blipGain.gain.setValueAtTime(0.015, audioCtx.currentTime);
-        blipGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
-        osc.connect(blipGain);
-        blipGain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.08);
-      } catch (e) {}
-    }
-
-    // --- Multi-Layer Stream Model ---
-    class MatrixStream {
-      constructor(xIndex, layer = 1) {
+    class Stream {
+      constructor(xIndex) {
         this.xIndex = xIndex;
-        this.layer = layer; // 0: Background, 1: Midground, 2: Foreground
-        this.init(true);
+        this.reset(true);
       }
 
-      init(firstInit = true) {
-        const scale = this.getScale();
-        const fSize = Math.floor(baseFontSize * scale);
-        const rows = Math.ceil(height / fSize);
-        this.y = firstInit ? (Math.random() * -rows) : Math.floor(Math.random() * -12);
-
-        const baseSpeed = 0.45 + Math.random() * 0.75;
-        const layerSpeedMultiplier = enable3D ? (this.layer === 2 ? 1.4 : this.layer === 0 ? 0.65 : 1.0) : 1.0;
-        this.speed = baseSpeed * layerSpeedMultiplier;
-
-        this.leadChar = CHARS[Math.floor(Math.random() * CHAR_LEN)];
-        this.trailLength = Math.floor(10 + Math.random() * 16);
-      }
-
-      getScale() {
-        if (!enable3D) return 1.0;
-        if (this.layer === 0) return 0.75; // Background
-        if (this.layer === 2) return 1.25; // Foreground
-        return 1.0; // Midground
+      reset(init = false) {
+        this.y = init ? Math.floor(Math.random() * -rows) : Math.floor(Math.random() * -12);
+        // Vary speeds slightly for natural organic depth
+        this.speed = 0.5 + Math.random() * 0.75;
+        this.char = chars[Math.floor(Math.random() * charLen)];
       }
 
       update() {
-        this.y += this.speed * speedMult;
-
-        // Random mutation of lead glyph
-        if (Math.random() < 0.2) {
-          this.leadChar = CHARS[Math.floor(Math.random() * CHAR_LEN)];
-          if (Math.random() < 0.05) playGlitchBlip();
+        this.y += this.speed;
+        // Mutate lead character randomly
+        if (Math.random() < 0.15) {
+          this.char = chars[Math.floor(Math.random() * charLen)];
         }
 
-        const scale = this.getScale();
-        const effectiveRows = Math.ceil(height / (baseFontSize * scale));
-
-        if (this.y > effectiveRows + this.trailLength + 2) {
-          this.init(false);
+        if (this.y > rows + 6) {
+          this.reset();
         }
       }
     }
 
-    // --- Screen Resize & Setup ---
     function resize() {
-      width = window.innerWidth;
-      height = window.innerHeight;
-      isMobile = width <= 768;
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const isMobile = width <= 768;
 
-      // Mobile devices get battery-conscious 30 FPS, desktop runs at fluid 60 FPS
-      targetFps = isMobile ? 30 : 60;
-      frameInterval = 1000 / targetFps;
+      // Legible font sizes optimized for screen type
+      fontSize = isMobile ? 18 : 16;
 
-      // Legible font sizes
-      baseFontSize = isMobile ? 18 : 16;
+      // Cap DPR at 2 to balance crispness with GPU fillrate load on mobile displays
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = Math.floor(width * dpr);
@@ -536,171 +144,162 @@
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      initStreams();
+      columns = Math.floor(width / fontSize);
+      rows = Math.ceil(height / fontSize);
 
-      // Clean background fill
+      drops = [];
+      for (let i = 0; i < columns; i++) {
+        const s = new Stream(i);
+        s.y = Math.random() * rows;
+        drops.push(s);
+      }
+
+      // Initial clean background fill
       ctx.fillStyle = '#000000';
       ctx.fillRect(0, 0, width, height);
     }
 
-    function initStreams() {
-      streams = [];
-      const baseCols = Math.floor(width / baseFontSize);
-
-      for (let i = 0; i < baseCols; i++) {
-        // Midground stream
-        const mid = new MatrixStream(i, 1);
-        mid.y = Math.random() * (height / baseFontSize);
-        streams.push(mid);
-
-        if (enable3D) {
-          // On mobile, reduce background stream density for GPU thermal efficiency
-          const bgStride = isMobile ? 3 : 2;
-          const fgStride = isMobile ? 5 : 4;
-
-          if (i % bgStride === 0) {
-            const bg = new MatrixStream(i, 0);
-            bg.y = Math.random() * (height / (baseFontSize * 0.75));
-            streams.push(bg);
-          }
-          if (i % fgStride === 0) {
-            const fg = new MatrixStream(i, 2);
-            fg.y = Math.random() * (height / (baseFontSize * 1.25));
-            streams.push(fg);
-          }
-        }
-      }
-
-      streams.sort((a, b) => a.layer - b.layer);
-    }
-
-    // --- Interactive Ripples & Shockwaves ---
-    function triggerInteraction(clientX, clientY) {
-      ripples.push({
-        x: clientX,
-        y: clientY,
-        radius: 0,
-        maxRadius: Math.max(140, width * 0.18),
-        speed: 10
-      });
-
-      const col = Math.floor(clientX / baseFontSize);
-      streams.forEach(s => {
-        if (Math.abs(s.xIndex - col) <= 2) {
-          s.y = 0;
-          s.speed = (1.5 + Math.random() * 1.5);
-        }
-      });
-      playGlitchBlip();
-    }
-
-    // --- Main Render Loop ---
     function render(timestamp) {
       animationFrameId = requestAnimationFrame(render);
 
-      if (isPaused) return;
-
       const elapsed = timestamp - lastTime;
-      if (elapsed < frameInterval) return;
+      if (elapsed < FRAME_INTERVAL) return;
 
-      lastTime = timestamp - (elapsed % frameInterval);
+      lastTime = timestamp - (elapsed % FRAME_INTERVAL);
 
-      // FPS Calculation
-      frameCount++;
-      if (timestamp - lastFpsUpdate >= 1000) {
-        const curFps = Math.round((frameCount * 1000) / (timestamp - lastFpsUpdate));
-        fpsCounter.textContent = `${curFps} FPS`;
-        frameCount = 0;
-        lastFpsUpdate = timestamp;
-      }
+      const width = window.innerWidth;
+      const height = window.innerHeight;
 
-      // Phosphor Fade Mask
-      ctx.fillStyle = `rgba(0, 0, 0, ${fadeRate})`;
+      // Semi-transparent fade layer to leave authentic phosphor trails
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
       ctx.fillRect(0, 0, width, height);
 
-      // Render ripples if active
-      if (ripples.length > 0) {
-        ctx.save();
-        for (let r = ripples.length - 1; r >= 0; r--) {
-          const rip = ripples[r];
-          rip.radius += rip.speed;
-          const alpha = Math.max(0, 1 - rip.radius / rip.maxRadius);
-
-          ctx.beginPath();
-          ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
-          ctx.strokeStyle = currentTheme.trail;
-          ctx.globalAlpha = alpha * 0.4;
-          ctx.lineWidth = 2;
-          ctx.stroke();
-
-          if (rip.radius >= rip.maxRadius) {
-            ripples.splice(r, 1);
-          }
-        }
-        ctx.restore();
-      }
-
+      ctx.font = `bold ${fontSize}px monospace`;
       ctx.textBaseline = 'top';
 
-      let activeLayer = -1;
+      for (let i = 0; i < columns; i++) {
+        const stream = drops[i];
+        if (!stream) continue;
 
-      for (let i = 0; i < streams.length; i++) {
-        const s = streams[i];
-        s.update();
+        stream.update();
 
-        const scale = s.getScale();
-        const fSize = Math.floor(baseFontSize * scale);
+        const x = stream.xIndex * fontSize;
+        const currentY = Math.floor(stream.y);
+        const yPx = currentY * fontSize;
 
-        if (s.layer !== activeLayer) {
-          activeLayer = s.layer;
-          ctx.font = `bold ${fSize}px monospace`;
-        }
+        if (currentY >= 0 && currentY <= rows) {
+          // Trail glyph (neon matrix green)
+          const trailChar = chars[Math.floor(Math.random() * charLen)];
+          ctx.fillStyle = '#00FF41';
+          ctx.fillText(trailChar, x, (currentY - 1) * fontSize);
 
-        const x = s.xIndex * baseFontSize;
-        const currentY = Math.floor(s.y);
-        const yPx = currentY * fSize;
-        const rows = Math.ceil(height / fSize);
-
-        if (currentY >= 0 && currentY <= rows + 1) {
-          const trailChar = CHARS[Math.floor(Math.random() * CHAR_LEN)];
-          
-          if (s.layer === 0) {
-            ctx.fillStyle = currentTheme.dim;
-          } else {
-            ctx.fillStyle = currentTheme.trail;
-          }
-          ctx.fillText(trailChar, x, (currentY - 1) * fSize);
-
-          ctx.fillStyle = (s.layer === 0) ? currentTheme.trail : currentTheme.lead;
-          ctx.fillText(s.leadChar, x, yPx);
+          // Lead glyph (bright glowing white)
+          ctx.fillStyle = '#E8FFE8';
+          ctx.fillText(stream.char, x, yPx);
         }
       }
     }
 
-    // --- Flash Trigger ---
-    function triggerFlash() {
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      ctx.fillRect(0, 0, width, height);
-      streams.forEach(s => s.init(true));
-      showNotification('Lightning Reset');
+    // --- Auto-Hiding Fullscreen UI ---
+    let hideTimer = null;
+    function showControls() {
+      fsBtn.classList.remove('fade-out');
+      clearTimeout(hideTimer);
+      hideTimer = setTimeout(() => {
+        fsBtn.classList.add('fade-out');
+      }, 3000);
     }
 
-    // --- Snapshot Feature ---
-    function takeSnapshot() {
-      const link = document.createElement('a');
-      link.download = `matrix-rain-${currentThemeKey}-${Date.now()}.png`;
-      link.href = canvas.toDataURL('image/png');
-      link.click();
-      showNotification('📷 Snapshot Saved');
+    function toggleFullscreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
     }
 
-    // --- Event Listeners ---
+    function updateFullscreenIcons() {
+      const isFs = !!document.fullscreenElement;
+      iconEnter.style.display = isFs ? 'none' : 'block';
+      iconExit.style.display = isFs ? 'block' : 'none';
+    }
+
+    document.addEventListener('fullscreenchange', updateFullscreenIcons);
+    fsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleFullscreen();
+      showControls();
+    });
+
+    // Touch & Mouse Interaction
+    function handleInteraction(clientX) {
+      showControls();
+      const col = Math.floor(clientX / fontSize);
+      if (drops[col]) drops[col].y = 0;
+      if (drops[col - 1]) drops[col - 1].y = 0;
+      if (drops[col + 1]) drops[col + 1].y = 0;
+    }
+
+    window.addEventListener('touchstart', (e) => {
+      if (e.touches && e.touches[0]) {
+        handleInteraction(e.touches[0].clientX);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (e.touches && e.touches[0]) {
+        handleInteraction(e.touches[0].clientX);
+      }
+    }, { passive: true });
+
+    window.addEventListener('mousemove', showControls, { passive: true });
+    window.addEventListener('click', (e) => {
+      handleInteraction(e.clientX);
+    });
+
+    // Double tap / double click anywhere toggles fullscreen
+    let lastTap = 0;
+    window.addEventListener('touchend', (e) => {
+      const now = Date.now();
+      if (now - lastTap < 300) {
+        toggleFullscreen();
+      }
+      lastTap = now;
+    });
+
+    window.addEventListener('dblclick', toggleFullscreen);
+
+    // Keyboard hotkeys: F (Fullscreen), Space (Pause/Resume)
+    let isPaused = false;
+    window.addEventListener('keydown', (e) => {
+      showControls();
+      if (e.code === 'KeyF') {
+        toggleFullscreen();
+      } else if (e.code === 'Space') {
+        e.preventDefault();
+        isPaused = !isPaused;
+        if (isPaused) {
+          if (animationFrameId) {
+            cancelAnimationFrame(animationFrameId);
+            animationFrameId = null;
+          }
+        } else {
+          lastTime = performance.now();
+          if (!animationFrameId) {
+            animationFrameId = requestAnimationFrame(render);
+          }
+        }
+      }
+    });
+
+    // Responsive Debounced Resize Listener
     let resizeTimeout;
     window.addEventListener('resize', () => {
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(resize, 100);
     }, { passive: true });
 
+    // Battery / Thermal optimization: pause animation when hidden
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         if (animationFrameId) {
@@ -709,127 +308,15 @@
         }
       } else {
         lastTime = performance.now();
-        if (!animationFrameId) {
+        if (!animationFrameId && !isPaused) {
           animationFrameId = requestAnimationFrame(render);
         }
       }
     });
 
-    // Touch & Pointer Interactions
-    window.addEventListener('touchstart', (e) => {
-      if (e.target.closest('#hud-panel') || e.target.closest('#hud-toggle')) return;
-      if (e.touches && e.touches[0]) {
-        triggerInteraction(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-
-    window.addEventListener('touchmove', (e) => {
-      if (e.target.closest('#hud-panel') || e.target.closest('#hud-toggle')) return;
-      if (e.touches && e.touches[0]) {
-        triggerInteraction(e.touches[0].clientX, e.touches[0].clientY);
-      }
-    }, { passive: true });
-
-    window.addEventListener('click', (e) => {
-      if (e.target.closest('#hud-panel') || e.target.closest('#hud-toggle')) return;
-      triggerInteraction(e.clientX, e.clientY);
-    });
-
-    // HUD Interactions
-    hudToggle.addEventListener('click', () => {
-      hudPanel.classList.toggle('active');
-    });
-
-    themeButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        updateTheme(btn.dataset.theme);
-      });
-    });
-
-    speedSlider.addEventListener('input', (e) => {
-      speedMult = parseFloat(e.target.value);
-      speedVal.textContent = `${speedMult.toFixed(1)}x`;
-    });
-
-    depthSlider.addEventListener('input', (e) => {
-      enable3D = e.target.value === '1';
-      depthVal.textContent = enable3D ? 'ON' : 'OFF';
-      initStreams();
-      showNotification(`3D Parallax: ${depthVal.textContent}`);
-    });
-
-    trailSlider.addEventListener('input', (e) => {
-      fadeRate = parseFloat(e.target.value);
-      trailVal.textContent = fadeRate <= 0.05 ? 'Long' : fadeRate >= 0.12 ? 'Short' : 'Normal';
-    });
-
-    btnPause.addEventListener('click', () => {
-      isPaused = !isPaused;
-      btnPause.textContent = isPaused ? '▶️ Resume' : '⏸️ Pause';
-      showNotification(isPaused ? 'Paused' : 'Resumed');
-    });
-
-    btnFullscreen.addEventListener('click', () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      } else {
-        document.exitFullscreen().catch(() => {});
-      }
-    });
-
-    btnAudio.addEventListener('click', toggleAudio);
-    btnSnap.addEventListener('click', takeSnapshot);
-
-    // Keyboard Shortcuts
-    window.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'INPUT') return;
-
-      switch (e.code) {
-        case 'Space':
-          e.preventDefault();
-          isPaused = !isPaused;
-          btnPause.textContent = isPaused ? '▶️ Resume' : '⏸️ Pause';
-          showNotification(isPaused ? 'Paused' : 'Resumed');
-          break;
-        case 'KeyH':
-          hudPanel.classList.toggle('active');
-          break;
-        case 'KeyF':
-          if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(() => {});
-          } else {
-            document.exitFullscreen().catch(() => {});
-          }
-          break;
-        case 'KeyC': {
-          const keys = Object.keys(THEMES);
-          const nextIdx = (keys.indexOf(currentThemeKey) + 1) % keys.length;
-          updateTheme(keys[nextIdx]);
-          break;
-        }
-        case 'KeyR':
-          triggerFlash();
-          break;
-      }
-    });
-
-    // Close HUD on escape
-    window.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && hudPanel.classList.contains('active')) {
-        hudPanel.classList.remove('active');
-      }
-    });
-
-    // Close HUD when tapping outside on mobile
-    window.addEventListener('pointerdown', (e) => {
-      if (hudPanel.classList.contains('active') && !e.target.closest('#hud-panel') && !e.target.closest('#hud-toggle')) {
-        hudPanel.classList.remove('active');
-      }
-    });
-
-    // Initialize
-    updateTheme('classic');
+    // Start
     resize();
+    showControls();
     lastTime = performance.now();
     animationFrameId = requestAnimationFrame(render);
   </script>
