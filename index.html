@@ -31,10 +31,10 @@
       touch-action: none;
     }
 
-    /* Minimalist Auto-Hiding Fullscreen Button */
+    /* Minimalist Auto-Hiding Fullscreen Button (Top-Right) */
     #fs-btn {
       position: fixed;
-      bottom: max(16px, env(safe-area-inset-bottom, 16px));
+      top: max(16px, env(safe-area-inset-top, 16px));
       right: max(16px, env(safe-area-inset-right, 16px));
       z-index: 10;
       background: rgba(0, 0, 0, 0.55);
@@ -48,7 +48,7 @@
       justify-content: center;
       cursor: pointer;
       opacity: 0.85;
-      transition: opacity 0.5s ease, background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+      transition: opacity 0.4s ease, background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
       backdrop-filter: blur(6px);
       -webkit-backdrop-filter: blur(6px);
       box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
@@ -76,7 +76,7 @@
       #fs-btn {
         width: 44px;
         height: 44px;
-        bottom: max(18px, env(safe-area-inset-bottom, 18px));
+        top: max(18px, env(safe-area-inset-top, 18px));
         right: max(18px, env(safe-area-inset-right, 18px));
       }
       #fs-btn svg {
@@ -113,6 +113,8 @@
     let columns = 0;
     let rows = 0;
     let drops = [];
+    let curWidth = 0;
+    let curHeight = 0;
 
     // Target 30 FPS for iconic film cadence + thermal/battery efficiency on mobile
     const TARGET_FPS = 30;
@@ -128,14 +130,14 @@
 
       reset(init = false) {
         this.y = init ? Math.floor(Math.random() * -rows) : Math.floor(Math.random() * -12);
-        // Vary speeds slightly for natural organic depth
+        // Organic varied velocities
         this.speed = 0.5 + Math.random() * 0.75;
         this.char = chars[Math.floor(Math.random() * charLen)];
       }
 
       update() {
         this.y += this.speed;
-        // Mutate lead character randomly
+        // Subtle mutation of lead character
         if (Math.random() < 0.15) {
           this.char = chars[Math.floor(Math.random() * charLen)];
         }
@@ -147,23 +149,22 @@
     }
 
     function resize() {
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-      const isMobile = width <= 768;
+      curWidth = window.innerWidth;
+      curHeight = window.innerHeight;
+      const isMobile = curWidth <= 768;
 
-      // Legible font sizes optimized for screen type
       fontSize = isMobile ? 18 : 16;
 
-      // Cap DPR at 2 to balance crispness with GPU fillrate load on mobile displays
+      // Cap DPR to 2 to eliminate excessive GPU fillrate load on 3x/4x mobile screens
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
-      canvas.width = Math.floor(width * dpr);
-      canvas.height = Math.floor(height * dpr);
+      canvas.width = Math.floor(curWidth * dpr);
+      canvas.height = Math.floor(curHeight * dpr);
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-      columns = Math.floor(width / fontSize);
-      rows = Math.ceil(height / fontSize);
+      columns = Math.floor(curWidth / fontSize);
+      rows = Math.ceil(curHeight / fontSize);
 
       drops = [];
       for (let i = 0; i < columns; i++) {
@@ -174,7 +175,11 @@
 
       // Initial clean background fill
       ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, width, height);
+      ctx.fillRect(0, 0, curWidth, curHeight);
+
+      // Pre-set persistent context properties to eliminate per-frame overhead
+      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.textBaseline = 'top';
     }
 
     function render(timestamp) {
@@ -185,15 +190,9 @@
 
       lastTime = timestamp - (elapsed % FRAME_INTERVAL);
 
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-
       // Semi-transparent fade layer to leave authentic phosphor trails
       ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-      ctx.fillRect(0, 0, width, height);
-
-      ctx.font = `bold ${fontSize}px monospace`;
-      ctx.textBaseline = 'top';
+      ctx.fillRect(0, 0, curWidth, curHeight);
 
       for (let i = 0; i < columns; i++) {
         const stream = drops[i];
@@ -249,7 +248,7 @@
       showControls();
     });
 
-    // Touch & Mouse Interaction
+    // Touch & Pointer Ripple Interaction
     function handleInteraction(clientX) {
       showControls();
       const col = Math.floor(clientX / fontSize);
@@ -259,12 +258,14 @@
     }
 
     window.addEventListener('touchstart', (e) => {
+      if (e.target.closest('#fs-btn')) return;
       if (e.touches && e.touches[0]) {
         handleInteraction(e.touches[0].clientX);
       }
     }, { passive: true });
 
     window.addEventListener('touchmove', (e) => {
+      if (e.target.closest('#fs-btn')) return;
       if (e.touches && e.touches[0]) {
         handleInteraction(e.touches[0].clientX);
       }
@@ -272,12 +273,14 @@
 
     window.addEventListener('mousemove', showControls, { passive: true });
     window.addEventListener('click', (e) => {
+      if (e.target.closest('#fs-btn')) return;
       handleInteraction(e.clientX);
     });
 
     // Double tap / double click anywhere toggles fullscreen
     let lastTap = 0;
     window.addEventListener('touchend', (e) => {
+      if (e.target.closest('#fs-btn')) return;
       const now = Date.now();
       if (now - lastTap < 300) {
         toggleFullscreen();
@@ -285,7 +288,10 @@
       lastTap = now;
     });
 
-    window.addEventListener('dblclick', toggleFullscreen);
+    window.addEventListener('dblclick', (e) => {
+      if (e.target.closest('#fs-btn')) return;
+      toggleFullscreen();
+    });
 
     // Keyboard hotkeys: F (Fullscreen), Space (Pause/Resume)
     let isPaused = false;
