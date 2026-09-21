@@ -6,7 +6,7 @@
 [![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://barizshah.github.io/matrix-digital-rain/)
 
-A lightweight, high-performance, zero-dependency HTML5 Canvas and vanilla JavaScript implementation of the iconic **Matrix Digital Rain** (falling code) visual effect. Featuring multi-layer 3D depth parallax, interactive shockwaves, cyberpunk theme switcher, interactive controls HUD, real-time FPS counter, synthesized Web Audio, and keyboard shortcuts.
+A lightweight, high-performance, zero-dependency HTML5 Canvas and vanilla JavaScript implementation of the iconic **Matrix Digital Rain** (falling code) visual effect. Featuring multi-layer 3D depth parallax, mobile & desktop adaptive frame rates, touch & pointer interactive shockwaves, cyberpunk theme switcher, interactive controls HUD, real-time FPS counter, synthesized Web Audio, and keyboard shortcuts.
 
 [🌐 **View Live Demo**](https://barizshah.github.io/matrix-digital-rain/)
 
@@ -19,6 +19,10 @@ A lightweight, high-performance, zero-dependency HTML5 Canvas and vanilla JavaSc
 ## ✨ What's New in v1.0.1
 
 - 🌌 **3D Depth & Parallax Layering**: Tri-layer streams (Foreground, Midground, Background) with dynamic scaling, varied velocities, and layered luminescence for authentic cinematic depth.
+- 📱 **Mobile & Desktop Adaptive Optimization**:
+  - Automatically switches between fluid 60 FPS on desktop displays and battery-conserving 30 FPS on mobile devices.
+  - Adaptive column stride and background density to minimize GPU fill-rate and thermal throttling on smartphones.
+  - Full support for mobile safe areas (`env(safe-area-inset-*)`), iOS status bar translucency, notch ergonomics, and multi-touch swipe/tap gestures.
 - 🎨 **Multi-Color Theme Engine**:
   - 🟢 **Matrix Classic** (Iconic Emerald Green)
   - 🔵 **Resurrection Cyan** (The Matrix Resurrections Neon Teal)
@@ -30,6 +34,15 @@ A lightweight, high-performance, zero-dependency HTML5 Canvas and vanilla JavaSc
 - 💥 **Interactive Shockwaves & Ripples**: Clicking, tapping, or dragging sends ripples through the digital matrix, scattering character streams.
 - 📸 **One-Click Snapshots**: Save high-resolution PNG captures of the digital rain instantly.
 - ⌨️ **Keyboard Hotkeys**: Full hands-on control via hotkeys.
+
+---
+
+## 📱 Mobile & Touch Experience
+
+- **Touch & Drag**: Tap or drag anywhere on the screen to trigger ripples and scatter cascading glyphs.
+- **Responsive Settings HUD**: Tap `⚙️` to adjust rain speed, toggle 3D parallax, change themes, or mute/unmute synthesized digital audio.
+- **Outside Tap Dismiss**: Tapping anywhere on the canvas automatically closes the settings HUD on mobile devices.
+- **Battery & Thermal Conservation**: The animation automatically pauses when the browser tab is hidden or minimized.
 
 ---
 

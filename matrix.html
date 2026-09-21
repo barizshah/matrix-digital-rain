@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#000000">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="Cinematic Matrix Digital Rain with multi-layer 3D depth, customizable themes, interactive physics, and audio.">
+  <meta name="description" content="Cinematic Matrix Digital Rain with multi-layer 3D depth, customizable themes, interactive physics, and audio. Optimized for desktop and mobile.">
   <title>Matrix Digital Rain</title>
   <style>
     * {
@@ -35,47 +35,49 @@
     /* Minimalist Cyberpunk HUD */
     #hud-toggle {
       position: fixed;
-      top: 16px;
-      right: 16px;
+      top: max(16px, env(safe-area-inset-top, 16px));
+      right: max(16px, env(safe-area-inset-right, 16px));
       z-index: 100;
-      background: rgba(0, 0, 0, 0.65);
+      background: rgba(0, 0, 0, 0.7);
       border: 1px solid var(--theme-lead, #00FF41);
       color: var(--theme-lead, #00FF41);
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 18px;
-      box-shadow: 0 0 10px rgba(0, 255, 65, 0.25);
+      font-size: 20px;
+      box-shadow: 0 0 12px rgba(0, 255, 65, 0.25);
       transition: all 0.2s ease;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
     }
     #hud-toggle:hover {
-      background: rgba(0, 255, 65, 0.15);
-      box-shadow: 0 0 15px rgba(0, 255, 65, 0.5);
+      background: rgba(0, 255, 65, 0.18);
+      box-shadow: 0 0 16px rgba(0, 255, 65, 0.5);
       transform: scale(1.05);
     }
 
     #hud-panel {
       position: fixed;
-      top: 64px;
-      right: 16px;
+      top: max(68px, calc(env(safe-area-inset-top, 16px) + 50px));
+      right: max(16px, env(safe-area-inset-right, 16px));
       z-index: 99;
-      width: 290px;
+      width: 300px;
       max-width: calc(100vw - 32px);
-      background: rgba(6, 12, 8, 0.88);
-      border: 1px solid rgba(0, 255, 65, 0.4);
-      border-radius: 12px;
-      padding: 16px 18px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      background: rgba(6, 12, 8, 0.92);
+      border: 1px solid rgba(0, 255, 65, 0.45);
+      border-radius: 14px;
+      padding: 18px 20px;
       color: #bbf7d0;
       font-size: 13px;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.8), 0 0 16px rgba(0, 255, 65, 0.15);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85), 0 0 20px rgba(0, 255, 65, 0.15);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       transition: opacity 0.25s cubic-bezier(0.16, 1, 0.3, 1), transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.25s;
       opacity: 0;
       visibility: hidden;
@@ -98,7 +100,7 @@
       text-transform: uppercase;
       font-size: 12px;
       color: var(--theme-lead, #00FF41);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
       padding-bottom: 8px;
       margin-bottom: 14px;
     }
@@ -120,39 +122,39 @@
     .hud-row input[type="range"] {
       -webkit-appearance: none;
       width: 100%;
-      height: 4px;
-      border-radius: 2px;
-      background: rgba(255, 255, 255, 0.15);
+      height: 6px;
+      border-radius: 3px;
+      background: rgba(255, 255, 255, 0.18);
       outline: none;
       cursor: pointer;
     }
     .hud-row input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       background: var(--theme-lead, #00FF41);
-      box-shadow: 0 0 8px var(--theme-lead, #00FF41);
+      box-shadow: 0 0 10px var(--theme-lead, #00FF41);
       cursor: pointer;
     }
 
     .theme-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
+      gap: 8px;
       margin-top: 4px;
     }
     .theme-btn {
-      height: 24px;
-      border-radius: 4px;
+      height: 28px;
+      border-radius: 6px;
       border: 1px solid rgba(255, 255, 255, 0.25);
       cursor: pointer;
       transition: transform 0.15s, border-color 0.15s;
     }
     .theme-btn.active {
       border-color: #fff;
-      transform: scale(1.1);
-      box-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+      transform: scale(1.08);
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
     }
 
     .hud-actions {
@@ -162,13 +164,13 @@
       margin-top: 14px;
     }
     .btn-action {
-      background: rgba(255, 255, 255, 0.06);
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.18);
       color: #f1f5f9;
-      padding: 7px 10px;
+      padding: 8px 10px;
       font-size: 11px;
       font-weight: 600;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       transition: all 0.2s;
       text-align: center;
@@ -177,8 +179,8 @@
       justify-content: center;
       gap: 5px;
     }
-    .btn-action:hover {
-      background: rgba(255, 255, 255, 0.12);
+    .btn-action:hover, .btn-action:active {
+      background: rgba(255, 255, 255, 0.15);
       border-color: var(--theme-lead, #00FF41);
       color: var(--theme-lead, #00FF41);
     }
@@ -194,8 +196,8 @@
       gap: 8px;
     }
     .hud-shortcuts span {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 2px 5px;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 2px 6px;
       border-radius: 4px;
       color: #94a3b8;
     }
@@ -203,10 +205,10 @@
     /* Notification Flash */
     #notification {
       position: fixed;
-      bottom: 24px;
+      bottom: max(24px, env(safe-area-inset-bottom, 24px));
       left: 50%;
       transform: translateX(-50%) translateY(20px);
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.88);
       border: 1px solid var(--theme-lead, #00FF41);
       color: var(--theme-lead, #00FF41);
       padding: 8px 18px;
@@ -217,12 +219,22 @@
       pointer-events: none;
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       z-index: 200;
-      box-shadow: 0 0 14px rgba(0, 255, 65, 0.3);
-      backdrop-filter: blur(6px);
+      box-shadow: 0 0 16px rgba(0, 255, 65, 0.35);
+      backdrop-filter: blur(8px);
     }
     #notification.show {
       opacity: 1;
       transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 768px) {
+      .hud-shortcuts {
+        display: none;
+      }
+      #hud-panel {
+        width: 270px;
+        padding: 14px 16px;
+      }
     }
   </style>
 </head>
@@ -236,7 +248,7 @@
   <div id="hud-panel">
     <div class="hud-title">
       <span>System Settings</span>
-      <span id="fps-counter" style="font-family: monospace; font-size: 11px;">30 FPS</span>
+      <span id="fps-counter" style="font-family: monospace; font-size: 11px;">60 FPS</span>
     </div>
 
     <div class="hud-row">
@@ -345,14 +357,15 @@
     let baseFontSize = 16;
     let width = 0;
     let height = 0;
-    let dpr = 1;
+    let isMobile = false;
 
     let streams = [];
     let ripples = [];
 
     // Frame timing & FPS calculation
-    const TARGET_FPS = 30;
-    const FRAME_INTERVAL = 1000 / TARGET_FPS;
+    // Adaptable FPS: 60 FPS on desktop, 30 FPS on mobile for high battery efficiency
+    let targetFps = 60;
+    let frameInterval = 1000 / targetFps;
     let lastTime = 0;
     let animationFrameId = null;
     let frameCount = 0;
@@ -406,12 +419,10 @@
       audioGain = audioCtx.createGain();
       audioGain.gain.setValueAtTime(0.04, audioCtx.currentTime);
 
-      // Low frequency digital hum
       const osc = audioCtx.createOscillator();
       osc.type = 'sawtooth';
       osc.frequency.setValueAtTime(55, audioCtx.currentTime);
 
-      // Subtle lowpass filter
       const filter = audioCtx.createBiquadFilter();
       filter.type = 'lowpass';
       filter.frequency.setValueAtTime(260, audioCtx.currentTime);
@@ -464,14 +475,15 @@
       constructor(xIndex, layer = 1) {
         this.xIndex = xIndex;
         this.layer = layer; // 0: Background, 1: Midground, 2: Foreground
-        this.init();
+        this.init(true);
       }
 
       init(firstInit = true) {
-        const rows = Math.ceil(height / (baseFontSize * this.getScale()));
+        const scale = this.getScale();
+        const fSize = Math.floor(baseFontSize * scale);
+        const rows = Math.ceil(height / fSize);
         this.y = firstInit ? (Math.random() * -rows) : Math.floor(Math.random() * -12);
 
-        // Speed depends on depth layer
         const baseSpeed = 0.45 + Math.random() * 0.75;
         const layerSpeedMultiplier = enable3D ? (this.layer === 2 ? 1.4 : this.layer === 0 ? 0.65 : 1.0) : 1.0;
         this.speed = baseSpeed * layerSpeedMultiplier;
@@ -490,7 +502,7 @@
       update() {
         this.y += this.speed * speedMult;
 
-        // Mutation of lead character
+        // Random mutation of lead glyph
         if (Math.random() < 0.2) {
           this.leadChar = CHARS[Math.floor(Math.random() * CHAR_LEN)];
           if (Math.random() < 0.05) playGlitchBlip();
@@ -507,12 +519,17 @@
 
     // --- Screen Resize & Setup ---
     function resize() {
-      const isMobile = window.innerWidth <= 768;
-      baseFontSize = isMobile ? 18 : 16;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-
       width = window.innerWidth;
       height = window.innerHeight;
+      isMobile = width <= 768;
+
+      // Mobile devices get battery-conscious 30 FPS, desktop runs at fluid 60 FPS
+      targetFps = isMobile ? 30 : 60;
+      frameInterval = 1000 / targetFps;
+
+      // Legible font sizes
+      baseFontSize = isMobile ? 18 : 16;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
@@ -530,7 +547,6 @@
       streams = [];
       const baseCols = Math.floor(width / baseFontSize);
 
-      // Distribute streams across layers: Midground (main), Background (dense/dim), Foreground (sparse/vibrant)
       for (let i = 0; i < baseCols; i++) {
         // Midground stream
         const mid = new MatrixStream(i, 1);
@@ -538,14 +554,16 @@
         streams.push(mid);
 
         if (enable3D) {
-          // Background stream (every column, offset)
-          if (i % 2 === 0) {
+          // On mobile, reduce background stream density for GPU thermal efficiency
+          const bgStride = isMobile ? 3 : 2;
+          const fgStride = isMobile ? 5 : 4;
+
+          if (i % bgStride === 0) {
             const bg = new MatrixStream(i, 0);
             bg.y = Math.random() * (height / (baseFontSize * 0.75));
             streams.push(bg);
           }
-          // Foreground stream (sparse)
-          if (i % 4 === 0) {
+          if (i % fgStride === 0) {
             const fg = new MatrixStream(i, 2);
             fg.y = Math.random() * (height / (baseFontSize * 1.25));
             streams.push(fg);
@@ -553,7 +571,6 @@
         }
       }
 
-      // Sort by layer so background renders first, foreground on top
       streams.sort((a, b) => a.layer - b.layer);
     }
 
@@ -567,7 +584,6 @@
         speed: 10
       });
 
-      // Scatter nearby streams
       const col = Math.floor(clientX / baseFontSize);
       streams.forEach(s => {
         if (Math.abs(s.xIndex - col) <= 2) {
@@ -585,9 +601,9 @@
       if (isPaused) return;
 
       const elapsed = timestamp - lastTime;
-      if (elapsed < FRAME_INTERVAL) return;
+      if (elapsed < frameInterval) return;
 
-      lastTime = timestamp - (elapsed % FRAME_INTERVAL);
+      lastTime = timestamp - (elapsed % frameInterval);
 
       // FPS Calculation
       frameCount++;
@@ -635,7 +651,6 @@
         const scale = s.getScale();
         const fSize = Math.floor(baseFontSize * scale);
 
-        // Update font size when crossing layers
         if (s.layer !== activeLayer) {
           activeLayer = s.layer;
           ctx.font = `bold ${fSize}px monospace`;
@@ -647,22 +662,15 @@
         const rows = Math.ceil(height / fSize);
 
         if (currentY >= 0 && currentY <= rows + 1) {
-          // Trail glyph
           const trailChar = CHARS[Math.floor(Math.random() * CHAR_LEN)];
           
           if (s.layer === 0) {
-            // Background: dimmer
             ctx.fillStyle = currentTheme.dim;
-          } else if (s.layer === 2) {
-            // Foreground: vibrant
-            ctx.fillStyle = currentTheme.trail;
           } else {
-            // Midground: standard trail
             ctx.fillStyle = currentTheme.trail;
           }
           ctx.fillText(trailChar, x, (currentY - 1) * fSize);
 
-          // Lead glyph (bright white-glowing)
           ctx.fillStyle = (s.layer === 0) ? currentTheme.trail : currentTheme.lead;
           ctx.fillText(s.leadChar, x, yPx);
         }
@@ -709,6 +717,13 @@
 
     // Touch & Pointer Interactions
     window.addEventListener('touchstart', (e) => {
+      if (e.target.closest('#hud-panel') || e.target.closest('#hud-toggle')) return;
+      if (e.touches && e.touches[0]) {
+        triggerInteraction(e.touches[0].clientX, e.touches[0].clientY);
+      }
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
       if (e.target.closest('#hud-panel') || e.target.closest('#hud-toggle')) return;
       if (e.touches && e.touches[0]) {
         triggerInteraction(e.touches[0].clientX, e.touches[0].clientY);
@@ -767,7 +782,6 @@
 
     // Keyboard Shortcuts
     window.addEventListener('keydown', (e) => {
-      // Avoid hotkeys when typing in any input
       if (e.target.tagName === 'INPUT') return;
 
       switch (e.code) {
@@ -802,6 +816,13 @@
     // Close HUD on escape
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && hudPanel.classList.contains('active')) {
+        hudPanel.classList.remove('active');
+      }
+    });
+
+    // Close HUD when tapping outside on mobile
+    window.addEventListener('pointerdown', (e) => {
+      if (hudPanel.classList.contains('active') && !e.target.closest('#hud-panel') && !e.target.closest('#hud-toggle')) {
         hudPanel.classList.remove('active');
       }
     });
