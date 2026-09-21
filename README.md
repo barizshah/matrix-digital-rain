@@ -1,11 +1,12 @@
 # Matrix Digital Rain 🟢
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
+[![Version: v1.0.1](https://img.shields.io/badge/Release-v1.0.1-brightgreen.svg)](https://github.com/barizshah/matrix-digital-rain/releases/tag/v1.0.1)
 [![HTML5 Canvas](https://img.shields.io/badge/Canvas-HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://barizshah.github.io/matrix-digital-rain/)
 
-A lightweight, zero-dependency HTML5 Canvas and vanilla JavaScript implementation of the iconic **Matrix Digital Rain** (falling code) visual effect. Featuring cascading Japanese Katakana & alphanumeric characters, glowing lead glyphs, dynamic window resizing, and smooth 30 FPS render physics.
+A lightweight, high-performance, zero-dependency HTML5 Canvas and vanilla JavaScript implementation of the iconic **Matrix Digital Rain** (falling code) visual effect. Featuring multi-layer 3D depth parallax, interactive shockwaves, cyberpunk theme switcher, interactive controls HUD, real-time FPS counter, synthesized Web Audio, and keyboard shortcuts.
 
 [🌐 **View Live Demo**](https://barizshah.github.io/matrix-digital-rain/)
 
@@ -15,14 +16,33 @@ A lightweight, zero-dependency HTML5 Canvas and vanilla JavaScript implementatio
 
 ---
 
-## ✨ Features
+## ✨ What's New in v1.0.1
 
-- ⚡ **Zero Dependencies**: Pure HTML5 Canvas & vanilla JavaScript (`0` external libraries or heavy assets).
-- 💚 **Authentic Movie Visuals**: Glowing bright white lead characters followed by neon green fading streams.
-- 📐 **Fully Responsive**: Dynamically adjusts to window resize events without distortion.
-- 🚀 **High Performance**: Optimized canvas animation loop with minimal CPU and memory footprint.
-- 🔣 **Rich Character Stream**: Classic half-width Japanese Katakana (`ﾊﾐﾋｰｳｼﾅﾓﾆ...`) and alphanumeric symbols.
-- 🎛️ **Easily Customizable**: Simple configuration for font size, drop speed, fade rates, and colors.
+- 🌌 **3D Depth & Parallax Layering**: Tri-layer streams (Foreground, Midground, Background) with dynamic scaling, varied velocities, and layered luminescence for authentic cinematic depth.
+- 🎨 **Multi-Color Theme Engine**:
+  - 🟢 **Matrix Classic** (Iconic Emerald Green)
+  - 🔵 **Resurrection Cyan** (The Matrix Resurrections Neon Teal)
+  - 🟡 **Cyberpunk Amber** (Retro Terminal Gold)
+  - 🔴 **Sith Crimson** (Deep Neon Red)
+  - 🟣 **Neon Purple** (Ghost in the Shell / Synthwave Violet)
+- 🎛️ **Interactive Cyberpunk HUD**: Sleek, glassmorphic settings panel with real-time sliders for Speed, 3D Parallax toggle, Trail persistence, and live FPS monitor.
+- 🔊 **Zero-Asset Audio Synthesis**: Built-in ambient digital hum and data blips synthesized purely with the browser's native Web Audio API (0 KB added download size).
+- 💥 **Interactive Shockwaves & Ripples**: Clicking, tapping, or dragging sends ripples through the digital matrix, scattering character streams.
+- 📸 **One-Click Snapshots**: Save high-resolution PNG captures of the digital rain instantly.
+- ⌨️ **Keyboard Hotkeys**: Full hands-on control via hotkeys.
+
+---
+
+## ⌨️ Keyboard Controls & Shortcuts
+
+| Key | Action |
+| :--- | :--- |
+| <kbd>Space</kbd> | Pause / Resume animation |
+| <kbd>H</kbd> | Toggle Settings HUD |
+| <kbd>F</kbd> | Toggle Fullscreen |
+| <kbd>C</kbd> | Cycle Color Themes |
+| <kbd>R</kbd> | Trigger Lightning Flash & Reset |
+| <kbd>Esc</kbd> | Close Settings HUD |
 
 ---
 
@@ -50,23 +70,25 @@ Then open your browser to [http://localhost:8000](http://localhost:8000).
 
 ---
 
-## 🛠️ Customization
+## 🛠️ Customization & Architecture
 
-Animation parameters can be tweaked directly inside `index.html`:
+The entire project remains **100% dependency-free** and self-contained within `index.html`. Custom settings, character sets, and themes can be customized in JavaScript:
 
 ```javascript
-// Customize character set (Katakana + Alphanumeric)
-const chars = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+// Authentic Katakana, Latin glyphs, and operators
+const CHARS = 'ﾊﾐﾋｰｳｼﾅﾓﾆｻﾜﾂｵﾘｱﾎﾃｹﾒｴｶｷﾑﾕﾗｾﾈｽﾀﾇﾍ0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ:・."=*+-<>¦｜';
 
-// Column density and font size
-const fontSize = 16; 
-
-// Glow effect on lead characters
-ctx.shadowColor = '#00FF41'; 
-ctx.shadowBlur = 8;
-
-// Trail fade rate (lower alpha = longer trails)
-ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+// Custom theme palette definition
+const THEMES = {
+  classic: {
+    name: 'Matrix Classic',
+    lead: '#E8FFE8',
+    trail: '#00FF41',
+    dim: '#00661a',
+    glow: '#00FF41'
+  },
+  // Add your own custom color themes here!
+};
 ```
 
 ---
