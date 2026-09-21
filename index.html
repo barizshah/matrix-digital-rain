@@ -66,8 +66,10 @@
       transform: scale(0.95);
     }
     #fs-btn.fade-out {
-      opacity: 0;
-      pointer-events: none;
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: scale(0.85);
     }
     #fs-btn svg {
       width: 20px;
@@ -221,7 +223,9 @@
     }
 
     // --- Fullscreen & Screensaver UI Engine ---
-    function isFullscreen() {
+    let isAppFullscreen = false;
+
+    function checkNativeFullscreen() {
       return !!(
         document.fullscreenElement ||
         document.webkitFullscreenElement ||
@@ -230,13 +234,17 @@
       );
     }
 
+    function isFullscreen() {
+      return isAppFullscreen || checkNativeFullscreen();
+    }
+
     let hideTimer = null;
     function showControls() {
       fsBtn.classList.remove('fade-out');
       document.body.classList.remove('hide-cursor');
       clearTimeout(hideTimer);
 
-      // Only auto-hide button and cursor when actively in fullscreen mode
+      // In fullscreen mode, automatically hide toggle and cursor after 3 seconds
       if (isFullscreen()) {
         hideTimer = setTimeout(() => {
           if (isFullscreen()) {
@@ -249,21 +257,31 @@
 
     function toggleFullscreen() {
       if (!isFullscreen()) {
-        const req = document.documentElement.requestFullscreen ||
-                    document.documentElement.webkitRequestFullscreen ||
-                    document.documentElement.mozRequestFullScreen ||
-                    document.documentElement.msRequestFullscreen;
+        const docEl = document.documentElement;
+        const req = docEl.requestFullscreen ||
+                    docEl.webkitRequestFullscreen ||
+                    docEl.mozRequestFullScreen ||
+                    docEl.msRequestFullscreen;
+
+        isAppFullscreen = true;
         if (req) {
-          req.call(document.documentElement).catch(() => {});
+          req.call(docEl).catch(() => {
+            // Even if browser denies native OS fullscreen (e.g. iOS Safari),
+            // we maintain in-app fullscreen mode
+            onFullscreenChange();
+          });
         }
+        onFullscreenChange();
       } else {
+        isAppFullscreen = false;
         const exit = document.exitFullscreen ||
                      document.webkitExitFullscreen ||
                      document.mozCancelFullScreen ||
                      document.msExitFullscreen;
-        if (exit) {
+        if (exit && checkNativeFullscreen()) {
           exit.call(document).catch(() => {});
         }
+        onFullscreenChange();
       }
     }
 
@@ -310,15 +328,20 @@
     }
 
     ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'].forEach(evt => {
-      document.addEventListener(evt, onFullscreenChange);
+      document.addEventListener(evt, () => {
+        isAppFullscreen = checkNativeFullscreen();
+        onFullscreenChange();
+      });
     });
 
     fsBtn.addEventListener('click', (e) => {
       e.stopPropagation();
+      e.preventDefault();
       toggleFullscreen();
     });
 
     // Touch & Pointer Ripple Interaction
+    let lastTouchTime = 0;
     function handleInteraction(clientX) {
       showControls();
       const col = Math.floor(clientX / fontSize);
@@ -329,6 +352,7 @@
 
     window.addEventListener('touchstart', (e) => {
       if (e.target.closest('#fs-btn')) return;
+      lastTouchTime = Date.now();
       if (e.touches && e.touches[0]) {
         handleInteraction(e.touches[0].clientX);
       }
@@ -336,14 +360,22 @@
 
     window.addEventListener('touchmove', (e) => {
       if (e.target.closest('#fs-btn')) return;
+      lastTouchTime = Date.now();
       if (e.touches && e.touches[0]) {
         handleInteraction(e.touches[0].clientX);
       }
     }, { passive: true });
 
-    window.addEventListener('mousemove', showControls, { passive: true });
+    window.addEventListener('mousemove', () => {
+      // Ignore synthetic mousemove events triggered by mobile touch
+      if (Date.now() - lastTouchTime < 600) return;
+      showControls();
+    }, { passive: true });
+
     window.addEventListener('click', (e) => {
       if (e.target.closest('#fs-btn')) return;
+      // On touch devices, click is synthesized after touchstart; avoid double trigger
+      if (Date.now() - lastTouchTime < 600) return;
       handleInteraction(e.clientX);
     });
 
