@@ -31,12 +31,12 @@ A lightweight, pure, zero-dependency HTML5 Canvas and vanilla JavaScript impleme
 - 🟢 **Pure & Distraction-Free**: Clean, authentic Matrix visual effect with no bloated menus, complex UI, or unnecessary dependencies.
 - ⚡ **Zero Dependencies**: Pure HTML5 Canvas and vanilla JavaScript (`0` libraries, `0` external assets).
 - 💚 **Authentic Movie Visuals**: Glowing bright white-hot lead glyphs cascading into phosphor neon-green fading trails (`#00FF41`).
-- ⛶ **Auto-Hiding Fullscreen**: Unobtrusive fullscreen button that smoothly fades out after 3 seconds of inactivity, plus double-tap/double-click and <kbd>F</kbd> shortcut support.
+- ⛶ **Smart Fullscreen**: Always accessible in windowed mode, and automatically fades away after 3 seconds of inactivity once entered into Fullscreen mode. Tap or move pointer to reveal it.
 - 📱 **Mobile & Desktop Optimized**:
   - Automatically adapts font size and column density for desktop (`16px`) and mobile (`18px`).
   - Device Pixel Ratio (DPR) capped at 2 to ensure razor-sharp text on Retina/OLED displays while preserving GPU fill-rate and battery life.
   - Safe-area insets support (`viewport-fit=cover`, `env(safe-area-inset-*)`) for notched phone displays.
-- 💤 **Screensaver Mode (Screen Wake Lock)**: Keeps the screen awake like an authentic screensaver while active, automatically releasing the wake lock when paused or minimized to preserve battery.
+- 💤 **Screensaver Mode (Screen Wake Lock)**: Activates automatically when entering fullscreen mode to keep your display awake as a cinematic screensaver; released immediately when exiting fullscreen, paused, or minimized.
 - 🔣 **Rich Character Stream**: Authentic half-width Japanese Katakana (`ﾊﾐﾋｰｳｼﾅﾓﾆ...`), Latin letters, numbers, and matrix symbols.
 - 👆 **Interactive Touch & Ripple**: Tap, click, or drag anywhere across the screen to scatter falling code streams.
 
