@@ -303,6 +303,7 @@
         e.preventDefault();
         isPaused = !isPaused;
         if (isPaused) {
+          releaseWakeLock();
           if (animationFrameId) {
             cancelAnimationFrame(animationFrameId);
             animationFrameId = null;
@@ -312,6 +313,7 @@
           if (!animationFrameId) {
             animationFrameId = requestAnimationFrame(render);
           }
+          requestWakeLock();
         }
       }
     });
@@ -323,9 +325,37 @@
       resizeTimeout = setTimeout(resize, 100);
     }, { passive: true });
 
-    // Battery / Thermal optimization: pause animation when hidden
+    // --- Screen Wake Lock (Screensaver Mode) ---
+    // Keeps screen awake like an authentic screensaver while active & visible
+    let wakeLock = null;
+
+    async function requestWakeLock() {
+      if ('wakeLock' in navigator && !document.hidden && !isPaused) {
+        try {
+          if (!wakeLock || wakeLock.released) {
+            wakeLock = await navigator.wakeLock.request('screen');
+            wakeLock.addEventListener('release', () => {
+              wakeLock = null;
+            });
+          }
+        } catch (e) {
+          // Gracefully ignore if policy or battery saver prevents wakeLock
+          wakeLock = null;
+        }
+      }
+    }
+
+    function releaseWakeLock() {
+      if (wakeLock) {
+        wakeLock.release().catch(() => {});
+        wakeLock = null;
+      }
+    }
+
+    // Battery / Thermal optimization: pause animation and release wake lock when hidden
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
+        releaseWakeLock();
         if (animationFrameId) {
           cancelAnimationFrame(animationFrameId);
           animationFrameId = null;
@@ -335,14 +365,21 @@
         if (!animationFrameId && !isPaused) {
           animationFrameId = requestAnimationFrame(render);
         }
+        requestWakeLock();
       }
     });
+
+    // Request wake lock upon initial user gesture or load
+    window.addEventListener('click', requestWakeLock, { once: true, passive: true });
+    window.addEventListener('touchstart', requestWakeLock, { once: true, passive: true });
+    window.addEventListener('keydown', requestWakeLock, { once: true, passive: true });
 
     // Start
     resize();
     showControls();
     lastTime = performance.now();
     animationFrameId = requestAnimationFrame(render);
+    requestWakeLock();
   </script>
 </body>
 </html>

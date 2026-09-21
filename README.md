@@ -36,7 +36,7 @@ A lightweight, pure, zero-dependency HTML5 Canvas and vanilla JavaScript impleme
   - Automatically adapts font size and column density for desktop (`16px`) and mobile (`18px`).
   - Device Pixel Ratio (DPR) capped at 2 to ensure razor-sharp text on Retina/OLED displays while preserving GPU fill-rate and battery life.
   - Safe-area insets support (`viewport-fit=cover`, `env(safe-area-inset-*)`) for notched phone displays.
-  - Automatic render sleep on tab minimize or screen lock via `visibilitychange`.
+- 💤 **Screensaver Mode (Screen Wake Lock)**: Keeps the screen awake like an authentic screensaver while active, automatically releasing the wake lock when paused or minimized to preserve battery.
 - 🔣 **Rich Character Stream**: Authentic half-width Japanese Katakana (`ﾊﾐﾋｰｳｼﾅﾓﾆ...`), Latin letters, numbers, and matrix symbols.
 - 👆 **Interactive Touch & Ripple**: Tap, click, or drag anywhere across the screen to scatter falling code streams.
 
