@@ -16,11 +16,6 @@ A lightweight, pure, zero-dependency HTML5 Canvas and vanilla JavaScript impleme
 
 ![Matrix Digital Rain Desktop Preview](assets/desktop.png)
 
----
-
-## ℹ️ Cyber About Dialog
-
-![Matrix Digital Rain About Dialog](assets/about.png)
 
 ---
 
