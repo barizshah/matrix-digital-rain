@@ -34,59 +34,255 @@
       cursor: none;
     }
 
-    /* Minimalist Auto-Hiding Fullscreen Button (Top-Right) */
-    #fs-btn {
+    /* Sleek Top-Right Control Bar */
+    #top-controls {
       position: fixed;
       top: max(16px, env(safe-area-inset-top, 16px));
       right: max(16px, env(safe-area-inset-right, 16px));
-      z-index: 10;
-      background: rgba(0, 0, 0, 0.55);
-      border: 1px solid rgba(0, 255, 65, 0.4);
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+    }
+    #top-controls.fade-out {
+      opacity: 0 !important;
+      visibility: hidden !important;
+      pointer-events: none !important;
+      transform: translateY(-6px);
+    }
+
+    .ctrl-btn {
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(0, 255, 65, 0.3);
       color: #00FF41;
-      width: 40px;
-      height: 40px;
-      border-radius: 10px;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       opacity: 0.85;
-      transition: opacity 0.4s ease, background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6);
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+      outline: none;
     }
-    #fs-btn:hover {
-      background: rgba(0, 255, 65, 0.2);
+    .ctrl-btn:hover {
+      background: rgba(0, 255, 65, 0.15);
       border-color: #00FF41;
       opacity: 1 !important;
-      transform: scale(1.05);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px rgba(0, 255, 65, 0.25);
     }
-    #fs-btn:active {
-      transform: scale(0.95);
+    .ctrl-btn:active {
+      transform: translateY(1px) scale(0.96);
     }
-    #fs-btn.fade-out {
-      opacity: 0 !important;
-      visibility: hidden !important;
-      pointer-events: none !important;
-      transform: scale(0.85);
-    }
-    #fs-btn svg {
-      width: 20px;
-      height: 20px;
+    .ctrl-btn svg {
+      width: 18px;
+      height: 18px;
       fill: currentColor;
     }
 
+    /* Ultra-Sleek Minimalist About Dialog */
+    #about-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s ease, visibility 0.25s;
+    }
+    #about-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .about-card {
+      position: relative;
+      width: 100%;
+      max-width: 380px;
+      background: rgba(4, 8, 5, 0.92);
+      border: 1px solid rgba(0, 255, 65, 0.35);
+      border-radius: 12px;
+      padding: 20px 22px;
+      color: #b8ffb8;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.9), 0 0 20px rgba(0, 255, 65, 0.12);
+      transform: scale(0.96) translateY(6px);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    #about-overlay.active .about-card {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .modal-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .modal-title {
+      color: #00FF41;
+      font-size: 0.88rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+    }
+
+    .version-tag {
+      font-size: 0.65rem;
+      color: #00FF41;
+      background: rgba(0, 255, 65, 0.08);
+      border: 1px solid rgba(0, 255, 65, 0.3);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .close-btn {
+      background: transparent;
+      border: none;
+      color: #447744;
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+    .close-btn:hover {
+      color: #00FF41;
+      transform: scale(1.1);
+    }
+
+    .about-desc {
+      font-size: 0.8rem;
+      line-height: 1.5;
+      color: #7fa67f;
+      margin-bottom: 16px;
+    }
+
+    /* Creator row */
+    .creator-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 12px;
+      background: rgba(0, 255, 65, 0.03);
+      border: 1px solid rgba(0, 255, 65, 0.18);
+      border-radius: 8px;
+      margin-bottom: 14px;
+    }
+
+    .creator-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .creator-name {
+      color: #FFFFFF;
+      font-weight: 600;
+      font-size: 0.84rem;
+      letter-spacing: 0.3px;
+    }
+
+    .creator-handle {
+      color: #4a804a;
+      font-size: 0.7rem;
+    }
+
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0, 255, 65, 0.1);
+      color: #00FF41;
+      border: 1px solid rgba(0, 255, 65, 0.4);
+      text-decoration: none;
+      font-size: 0.74rem;
+      font-weight: 600;
+      padding: 4px 9px;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+    }
+    .github-link:hover {
+      background: #00FF41;
+      color: #000;
+      box-shadow: 0 0 10px rgba(0, 255, 65, 0.4);
+    }
+    .github-link svg {
+      width: 13px;
+      height: 13px;
+      fill: currentColor;
+    }
+
+    /* Minimalist Key Hints */
+    .shortcuts-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px 10px;
+      font-size: 0.72rem;
+      color: #6a966a;
+      border-top: 1px solid rgba(0, 255, 65, 0.1);
+      padding-top: 12px;
+    }
+
+    .shortcut-entry {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .kbd-tag {
+      background: rgba(0, 255, 65, 0.06);
+      color: #00FF41;
+      border: 1px solid rgba(0, 255, 65, 0.25);
+      border-radius: 4px;
+      padding: 1px 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      min-width: 20px;
+      text-align: center;
+    }
+
     @media (max-width: 768px) {
-      #fs-btn {
-        width: 44px;
-        height: 44px;
-        top: max(18px, env(safe-area-inset-top, 18px));
-        right: max(18px, env(safe-area-inset-right, 18px));
+      .ctrl-btn {
+        width: 42px;
+        height: 42px;
       }
-      #fs-btn svg {
-        width: 22px;
-        height: 22px;
+      .ctrl-btn svg {
+        width: 20px;
+        height: 20px;
+      }
+      .about-card {
+        padding: 18px 16px;
+        max-width: 340px;
+      }
+      .shortcuts-list {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -94,19 +290,68 @@
 <body>
   <canvas id="matrix"></canvas>
 
-  <button id="fs-btn" aria-label="Toggle Fullscreen" title="Toggle Fullscreen (F)">
-    <svg id="fs-icon-enter" viewBox="0 0 24 24">
-      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-    </svg>
-    <svg id="fs-icon-exit" viewBox="0 0 24 24" style="display: none;">
-      <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
-    </svg>
-  </button>
+  <!-- Top-Right Action Controls -->
+  <div id="top-controls">
+    <button id="info-btn" class="ctrl-btn" aria-label="About App" title="About App (I)">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+      </svg>
+    </button>
+    <button id="fs-btn" class="ctrl-btn" aria-label="Toggle Fullscreen" title="Toggle Fullscreen (F)">
+      <svg id="fs-icon-enter" viewBox="0 0 24 24">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+      </svg>
+      <svg id="fs-icon-exit" viewBox="0 0 24 24" style="display: none;">
+        <path d="M5 16h3v3h2v-5H5v2zm3-8H5v2h5V5H8v3zm6 11h2v-3h3v-2h-5v5zm2-11V5h-2v5h5V8h-3z"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Minimalist About Modal -->
+  <div id="about-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
+    <div class="about-card">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span id="modal-heading" class="modal-title">MATRIX RAIN</span>
+          <span class="version-tag">v1.0.0</span>
+        </div>
+        <button id="close-modal-btn" class="close-btn" aria-label="Close dialog">✕</button>
+      </div>
+
+      <p class="about-desc">
+        Authentic Matrix digital rain stream in pure HTML5 Canvas. Engineered for cinematic phosphor trails, responsive scaling, and battery efficiency.
+      </p>
+
+      <div class="creator-row">
+        <div class="creator-meta">
+          <span class="creator-name">Bariz Shah</span>
+          <span class="creator-handle">@barizshah</span>
+        </div>
+        <a class="github-link" href="https://github.com/barizshah" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+          </svg>
+          GitHub
+        </a>
+      </div>
+
+      <div class="shortcuts-list">
+        <div class="shortcut-entry"><span class="kbd-tag">Space</span> Pause / Play</div>
+        <div class="shortcut-entry"><span class="kbd-tag">F</span> Fullscreen</div>
+        <div class="shortcut-entry"><span class="kbd-tag">I</span> About dialog</div>
+        <div class="shortcut-entry"><span class="kbd-tag">Esc</span> Close dialog</div>
+      </div>
+    </div>
+  </div>
 
   <script>
     const canvas = document.getElementById('matrix');
     const ctx = canvas.getContext('2d', { alpha: false });
+    const topControls = document.getElementById('top-controls');
     const fsBtn = document.getElementById('fs-btn');
+    const infoBtn = document.getElementById('info-btn');
+    const aboutOverlay = document.getElementById('about-overlay');
+    const closeModalBtn = document.getElementById('close-modal-btn');
     const iconEnter = document.getElementById('fs-icon-enter');
     const iconExit = document.getElementById('fs-icon-exit');
 
@@ -126,6 +371,8 @@
     const FRAME_INTERVAL = 1000 / TARGET_FPS;
     let lastTime = 0;
     let animationFrameId = null;
+    let isPaused = false;
+    let isModalOpen = false;
 
     class Stream {
       constructor(xIndex) {
@@ -153,57 +400,18 @@
       }
     }
 
-    function resize() {
-      curWidth = window.innerWidth;
-      curHeight = window.innerHeight;
-      const isMobile = curWidth <= 768;
-
-      fontSize = isMobile ? 18 : 16;
-
-      // Cap DPR to 2 to eliminate excessive GPU fillrate load on 3x/4x mobile screens
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-
-      canvas.width = Math.floor(curWidth * dpr);
-      canvas.height = Math.floor(curHeight * dpr);
-
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
-      columns = Math.floor(curWidth / fontSize);
-      rows = Math.ceil(curHeight / fontSize);
-
-      drops = [];
-      for (let i = 0; i < columns; i++) {
-        const s = new Stream(i);
-        s.y = Math.random() * rows;
-        drops.push(s);
-      }
-
-      // Initial clean background fill
-      ctx.fillStyle = '#000000';
-      ctx.fillRect(0, 0, curWidth, curHeight);
-
-      // Pre-set persistent context properties to eliminate per-frame overhead
-      ctx.font = `bold ${fontSize}px monospace`;
-      ctx.textBaseline = 'top';
-    }
-
-    function render(timestamp) {
-      animationFrameId = requestAnimationFrame(render);
-
-      const elapsed = timestamp - lastTime;
-      if (elapsed < FRAME_INTERVAL) return;
-
-      lastTime = timestamp - (elapsed % FRAME_INTERVAL);
-
+    function drawStreams(advance = true) {
       // Semi-transparent fade layer to leave authentic phosphor trails
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
+      ctx.fillStyle = advance ? 'rgba(0, 0, 0, 0.08)' : '#000000';
       ctx.fillRect(0, 0, curWidth, curHeight);
 
       for (let i = 0; i < columns; i++) {
         const stream = drops[i];
         if (!stream) continue;
 
-        stream.update();
+        if (advance) {
+          stream.update();
+        }
 
         const x = stream.xIndex * fontSize;
         const currentY = Math.floor(stream.y);
@@ -220,6 +428,107 @@
           ctx.fillText(stream.char, x, yPx);
         }
       }
+    }
+
+    function resize() {
+      const nextWidth = window.innerWidth;
+      const nextHeight = window.innerHeight;
+      const isMobile = nextWidth <= 768;
+
+      fontSize = isMobile ? 18 : 16;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+      // Snapshot the exact pixel bitmap before the canvas backing store is wiped
+      let snapshot = null;
+      let snapW = 0, snapH = 0;
+      if (canvas.width > 0 && canvas.height > 0) {
+        snapshot = document.createElement('canvas');
+        snapshot.width = canvas.width;
+        snapshot.height = canvas.height;
+        snapW = curWidth;
+        snapH = curHeight;
+        const snapCtx = snapshot.getContext('2d');
+        snapCtx.drawImage(canvas, 0, 0);
+      }
+
+      curWidth = nextWidth;
+      curHeight = nextHeight;
+
+      canvas.width = Math.floor(curWidth * dpr);
+      canvas.height = Math.floor(curHeight * dpr);
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const oldColumns = columns;
+      columns = Math.floor(curWidth / fontSize);
+      rows = Math.ceil(curHeight / fontSize);
+
+      if (drops.length === 0) {
+        drops = [];
+        for (let i = 0; i < columns; i++) {
+          const s = new Stream(i);
+          s.y = Math.random() * rows;
+          drops.push(s);
+        }
+      } else {
+        // Adjust column count smoothly without resetting existing stream states
+        if (columns > oldColumns) {
+          for (let i = oldColumns; i < columns; i++) {
+            const s = new Stream(i);
+            s.y = Math.random() * rows;
+            drops.push(s);
+          }
+        } else if (columns < oldColumns) {
+          drops.length = columns;
+        }
+      }
+
+      // Initial clean background fill
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(0, 0, curWidth, curHeight);
+
+      // Pre-set persistent context properties
+      ctx.font = `bold ${fontSize}px monospace`;
+      ctx.textBaseline = 'top';
+
+      // If paused or modal open, restore the exact frozen pixel snapshot with 100% fidelity across full viewport
+      if (isPaused || isModalOpen) {
+        if (snapshot) {
+          // Draw snapshot to full-bleed dimensions so there is ZERO bottom or side gap
+          ctx.drawImage(snapshot, 0, 0, curWidth, curHeight);
+          // If columns grew, ensure any new columns also have static glyphs
+          if (columns > oldColumns) {
+            for (let i = oldColumns; i < columns; i++) {
+              const stream = drops[i];
+              if (!stream) continue;
+              const x = stream.xIndex * fontSize;
+              const currentY = Math.floor(stream.y);
+              if (currentY >= 0 && currentY <= rows) {
+                ctx.fillStyle = '#E8FFE8';
+                ctx.fillText(stream.char, x, currentY * fontSize);
+              }
+            }
+          }
+        } else {
+          drawStreams(false);
+        }
+      }
+    }
+
+    function render(timestamp) {
+      if (isPaused || isModalOpen) {
+        animationFrameId = null;
+        return;
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+
+      const elapsed = timestamp - lastTime;
+      if (elapsed < FRAME_INTERVAL) return;
+
+      lastTime = timestamp - (elapsed % FRAME_INTERVAL);
+
+      drawStreams(true);
     }
 
     // --- Fullscreen & Screensaver UI Engine ---
@@ -240,15 +549,15 @@
 
     let hideTimer = null;
     function showControls() {
-      fsBtn.classList.remove('fade-out');
+      topControls.classList.remove('fade-out');
       document.body.classList.remove('hide-cursor');
       clearTimeout(hideTimer);
 
       // In fullscreen mode, automatically hide toggle and cursor after 3 seconds
-      if (isFullscreen()) {
+      if (isFullscreen() && !isModalOpen) {
         hideTimer = setTimeout(() => {
-          if (isFullscreen()) {
-            fsBtn.classList.add('fade-out');
+          if (isFullscreen() && !isModalOpen) {
+            topControls.classList.add('fade-out');
             document.body.classList.add('hide-cursor');
           }
         }, 3000);
@@ -266,8 +575,6 @@
         isAppFullscreen = true;
         if (req) {
           req.call(docEl).catch(() => {
-            // Even if browser denies native OS fullscreen (e.g. iOS Safari),
-            // we maintain in-app fullscreen mode
             onFullscreenChange();
           });
         }
@@ -285,33 +592,45 @@
       }
     }
 
-    // --- Screen Wake Lock (Screensaver Mode - Fullscreen Only) ---
+    // --- Screen Wake Lock (Screensaver Mode) ---
     let wakeLock = null;
+    let isWakeLockRequested = false;
 
     async function requestWakeLock() {
-      // Screensaver wake lock should ONLY be requested when in fullscreen mode
-      if ('wakeLock' in navigator && isFullscreen() && !document.hidden && !isPaused) {
-        try {
-          if (!wakeLock || wakeLock.released) {
-            wakeLock = await navigator.wakeLock.request('screen');
-            wakeLock.addEventListener('release', () => {
-              wakeLock = null;
-            });
+      if (!('wakeLock' in navigator)) return;
+      if (!isFullscreen() || document.hidden || isPaused || isModalOpen) return;
+      if (isWakeLockRequested || (wakeLock && !wakeLock.released)) return;
+
+      try {
+        isWakeLockRequested = true;
+        const lock = await navigator.wakeLock.request('screen');
+        wakeLock = lock;
+        wakeLock.addEventListener('release', () => {
+          if (wakeLock === lock) {
+            wakeLock = null;
           }
-        } catch (e) {
-          wakeLock = null;
-        }
+        });
+      } catch (err) {
+        wakeLock = null;
+      } finally {
+        isWakeLockRequested = false;
       }
     }
 
-    function releaseWakeLock() {
-      if (wakeLock) {
-        wakeLock.release().catch(() => {});
+    async function releaseWakeLock() {
+      isWakeLockRequested = false;
+      if (wakeLock && !wakeLock.released) {
+        try {
+          await wakeLock.release();
+        } catch (e) {}
         wakeLock = null;
       }
     }
 
     function onFullscreenChange() {
+      // Immediately resize synchronously so canvas redraws instantaneously with zero lag/gap
+      resize();
+
       const isFs = isFullscreen();
       iconEnter.style.display = isFs ? 'none' : 'block';
       iconExit.style.display = isFs ? 'block' : 'none';
@@ -322,7 +641,7 @@
       } else {
         releaseWakeLock();
         clearTimeout(hideTimer);
-        fsBtn.classList.remove('fade-out');
+        topControls.classList.remove('fade-out');
         document.body.classList.remove('hide-cursor');
       }
     }
@@ -334,74 +653,104 @@
       });
     });
 
+    // Modal Handlers
+    function openAboutModal() {
+      isModalOpen = true;
+      aboutOverlay.classList.add('active');
+      showControls();
+      releaseWakeLock();
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+        animationFrameId = null;
+      }
+    }
+
+    function closeAboutModal() {
+      if (!isModalOpen) return;
+      isModalOpen = false;
+      aboutOverlay.classList.remove('active');
+      showControls();
+      if (!isPaused) {
+        lastTime = performance.now();
+        if (!animationFrameId) {
+          animationFrameId = requestAnimationFrame(render);
+        }
+        if (isFullscreen()) {
+          requestWakeLock();
+        }
+      }
+    }
+
+    infoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      if (isModalOpen) {
+        closeAboutModal();
+      } else {
+        openAboutModal();
+      }
+    });
+
+    closeModalBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      e.preventDefault();
+      closeAboutModal();
+    });
+
+    aboutOverlay.addEventListener('click', (e) => {
+      if (e.target === aboutOverlay) {
+        closeAboutModal();
+      }
+    });
+
     fsBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       e.preventDefault();
       toggleFullscreen();
     });
 
-    // Touch & Pointer Ripple Interaction
+    // Touch & Pointer Activity (reveals auto-hiding controls)
     let lastTouchTime = 0;
-    function handleInteraction(clientX) {
-      showControls();
-      const col = Math.floor(clientX / fontSize);
-      if (drops[col]) drops[col].y = 0;
-      if (drops[col - 1]) drops[col - 1].y = 0;
-      if (drops[col + 1]) drops[col + 1].y = 0;
-    }
 
     window.addEventListener('touchstart', (e) => {
-      if (e.target.closest('#fs-btn')) return;
+      if (e.target.closest('#top-controls') || e.target.closest('#about-overlay')) return;
       lastTouchTime = Date.now();
-      if (e.touches && e.touches[0]) {
-        handleInteraction(e.touches[0].clientX);
-      }
+      showControls();
     }, { passive: true });
 
     window.addEventListener('touchmove', (e) => {
-      if (e.target.closest('#fs-btn')) return;
+      if (e.target.closest('#top-controls') || e.target.closest('#about-overlay')) return;
       lastTouchTime = Date.now();
-      if (e.touches && e.touches[0]) {
-        handleInteraction(e.touches[0].clientX);
-      }
+      showControls();
     }, { passive: true });
 
     window.addEventListener('mousemove', () => {
-      // Ignore synthetic mousemove events triggered by mobile touch
       if (Date.now() - lastTouchTime < 600) return;
       showControls();
     }, { passive: true });
 
-    window.addEventListener('click', (e) => {
-      if (e.target.closest('#fs-btn')) return;
-      // On touch devices, click is synthesized after touchstart; avoid double trigger
-      if (Date.now() - lastTouchTime < 600) return;
-      handleInteraction(e.clientX);
-    });
+    window.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('#top-controls') || e.target.closest('#about-overlay')) return;
+      showControls();
+    }, { passive: true });
 
-    // Double tap / double click anywhere toggles fullscreen
-    let lastTap = 0;
-    window.addEventListener('touchend', (e) => {
-      if (e.target.closest('#fs-btn')) return;
-      const now = Date.now();
-      if (now - lastTap < 300) {
-        toggleFullscreen();
-      }
-      lastTap = now;
-    });
-
-    window.addEventListener('dblclick', (e) => {
-      if (e.target.closest('#fs-btn')) return;
-      toggleFullscreen();
-    });
-
-    // Keyboard hotkeys: F (Fullscreen), Space (Pause/Resume)
-    let isPaused = false;
+    // Keyboard hotkeys
     window.addEventListener('keydown', (e) => {
       showControls();
-      if (e.code === 'KeyF') {
+      if (e.code === 'Escape') {
+        if (isModalOpen) {
+          closeAboutModal();
+        }
+      } else if (e.code === 'KeyI') {
+        if (isModalOpen) {
+          closeAboutModal();
+        } else {
+          openAboutModal();
+        }
+      } else if (e.code === 'KeyF') {
         toggleFullscreen();
       } else if (e.code === 'Space') {
+        if (isModalOpen) return;
         e.preventDefault();
         isPaused = !isPaused;
         if (isPaused) {
@@ -429,7 +778,7 @@
       resizeTimeout = setTimeout(resize, 100);
     }, { passive: true });
 
-    // Battery / Thermal optimization: pause animation and release wake lock when hidden
+    // Battery / Thermal optimization
     document.addEventListener('visibilitychange', () => {
       if (document.hidden) {
         releaseWakeLock();
@@ -439,10 +788,10 @@
         }
       } else {
         lastTime = performance.now();
-        if (!animationFrameId && !isPaused) {
+        if (!animationFrameId && !isPaused && !isModalOpen) {
           animationFrameId = requestAnimationFrame(render);
         }
-        if (isFullscreen()) {
+        if (isFullscreen() && !isModalOpen) {
           requestWakeLock();
         }
       }
