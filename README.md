@@ -1,7 +1,7 @@
 # Matrix Digital Rain 🟢
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Version: v2.0.0](https://img.shields.io/badge/Release-v2.0.0-brightgreen.svg)](https://github.com/barizshah/matrix-digital-rain/releases/tag/v2.0.0)
+[![Version: v1.0.0](https://img.shields.io/badge/Release-v1.0.0-brightgreen.svg)](https://github.com/barizshah/matrix-digital-rain/releases/tag/v1.0.0)
 [![HTML5 Canvas](https://img.shields.io/badge/Canvas-HTML5-E34F26?logo=html5&logoColor=white)](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
 [![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
 [![Live Demo](https://img.shields.io/badge/demo-online-brightgreen.svg)](https://barizshah.github.io/matrix-digital-rain/)
@@ -18,6 +18,12 @@ A lightweight, pure, zero-dependency HTML5 Canvas and vanilla JavaScript impleme
 
 ---
 
+## ℹ️ Cyber About Dialog
+
+![Matrix Digital Rain About Dialog](assets/about.png)
+
+---
+
 ## 📱 Mobile Preview
 
 <p align="center">
@@ -26,31 +32,33 @@ A lightweight, pure, zero-dependency HTML5 Canvas and vanilla JavaScript impleme
 
 ---
 
-## ✨ Features in v2.0.0
+## ✨ Features in v1.0.0
 
-- 🟢 **Pure & Distraction-Free**: Clean, authentic Matrix visual effect with no bloated menus, complex UI, or unnecessary dependencies.
-- ⚡ **Zero Dependencies**: Pure HTML5 Canvas and vanilla JavaScript (`0` libraries, `0` external assets).
-- 💚 **Authentic Movie Visuals**: Glowing bright white-hot lead glyphs cascading into phosphor neon-green fading trails (`#00FF41`).
-- ⛶ **Smart Fullscreen**: Always accessible in windowed mode, and automatically fades away after 3 seconds of inactivity once entered into Fullscreen mode. Tap or move pointer to reveal it.
+- 🟢 **Pure & Distraction-Free**: Clean, authentic Matrix visual effect with no bloated menus, clutter, or external dependencies.
+- ⚡ **Zero Dependencies**: Pure HTML5 Canvas and vanilla JavaScript (`0` libraries, `0` external assets, self-contained single-file).
+- 💚 **Authentic Movie Visuals**: Glowing bright white-hot lead glyphs cascading into phosphor neon-green fading trails (`#00FF41`) with organic column depth and authentic 30 FPS film cadence.
+- ⛶ **Flawless Fullscreen**: Quick-toggle button in the header and hotkey <kbd>F</kbd>. Includes auto-fade HUD timer and full-bleed pixel-perfect canvas rendering with zero gap.
+- 🧊 **Perfect Pause State**: Freeze rain instantaneously with <kbd>Space</kbd>. Seamlessly transition into and out of fullscreen mode while paused without visual distortion, gaps, or animation resets.
+- ℹ️ **Cyber About Modal**: Translucent glassmorphism info dialog featuring keyboard shortcuts, version badge, and creator attribution.
 - 📱 **Mobile & Desktop Optimized**:
   - Automatically adapts font size and column density for desktop (`16px`) and mobile (`18px`).
   - Device Pixel Ratio (DPR) capped at 2 to ensure razor-sharp text on Retina/OLED displays while preserving GPU fill-rate and battery life.
   - Safe-area insets support (`viewport-fit=cover`, `env(safe-area-inset-*)`) for notched phone displays.
-- 💤 **Screensaver Mode (Screen Wake Lock)**: Activates automatically when entering fullscreen mode to keep your display awake as a cinematic screensaver; released immediately when exiting fullscreen, paused, or minimized.
+- 💤 **Screensaver Mode (Screen Wake Lock)**: Activates automatically when entering fullscreen mode to keep your display awake as a cinematic ambient screensaver; releases immediately when exiting fullscreen, paused, or minimized.
 - 🔣 **Rich Character Stream**: Authentic half-width Japanese Katakana (`ﾊﾐﾋｰｳｼﾅﾓﾆ...`), Latin letters, numbers, and matrix symbols.
-- 👆 **Interactive Touch & Ripple**: Tap, click, or drag anywhere across the screen to scatter falling code streams.
 
 ---
 
-## ⌨️ Controls & Gestures
+## ⌨️ Controls & Shortcuts
 
-| Control / Gesture | Action |
+| Control / Shortcut | Action |
 | :--- | :--- |
-| **Tap / Click** | Trigger digital rain ripple at pointer location |
-| **Move Mouse / Touch** | Reveal fullscreen control |
-| **Double Tap / Double Click** | Toggle Fullscreen mode |
-| <kbd>F</kbd> | Toggle Fullscreen |
 | <kbd>Space</kbd> | Pause / Resume animation |
+| <kbd>F</kbd> | Toggle Fullscreen mode |
+| <kbd>I</kbd> | Toggle Cyber About dialog |
+| <kbd>Esc</kbd> | Close Cyber About dialog |
+| **Header Button (⛶)** | Toggle Fullscreen mode |
+| **Header Button (ⓘ)** | Open Cyber About dialog |
 
 ---
 
